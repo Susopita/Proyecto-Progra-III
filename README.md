@@ -2,7 +2,7 @@
 ## Integrantes
 - Tiziano Abraham Lopez Vargas
 - Diego André Miranda Zamora
-- Leydy Rodríguez
+- Leydy Yuliza Rodriguez Poma
 
 ## Subtitulos
 
