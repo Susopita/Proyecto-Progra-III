@@ -3,6 +3,7 @@
 - Tiziano Abraham Lopez Vargas
 - Diego André Miranda Zamora
 - Leydy Yuliza Rodriguez Poma
+- Humberto Daniel Caballero Sarco
 
 ## Subtitulos
 
