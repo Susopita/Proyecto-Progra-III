@@ -6,7 +6,7 @@ AVISOS: Utilizar, por lo menos, 2 patrones de diseño diferentes.
 ## Frontend
 
 ### Libreria Arcade
-
+Es una libreria de GUI's que vamos a utilizar en la interfaz de usuario. Pueden acceder por el siguiente link: (https://api.arcade.academy/en/latest/examples/index.html)
 
 ## Metodos de fusion de frontend y backend
 
