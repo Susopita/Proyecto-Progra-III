@@ -95,6 +95,17 @@ Con GCC, el comando sería gcc -shared -o mydll.dll source.o.
 
 Si estás utilizando Visual Studio, puedes crear un proyecto de biblioteca DLL y agregar tus archivos de código fuente. Visual Studio se encargará de la compilación y vinculación para generar la .dll 
 
+***Boost.python***
+
+Boost.Python es una biblioteca que permite exponer clases, funciones y objetos de C++ a Python y viceversa
+
+cómo usar Boost.Python:
+
+- Instalación: Necesitas descargar e instalar Boost, que incluye Boost.Python.
+
+- Exposición de clases y funciones de C++: Utiliza macros especiales para indicar qué partes de tu código C++ quieres exponer a Python.
+- Compilación: Compila tu código C++ como una extensión de Python, que será un archivo compartido (.so en Linux o .dll en Windows).
+- Uso en Python: Importa la extensión compilada en tu script de Python como si fuera un módulo normal y utiliza las clases y funciones de C++ directamente.
 
 ## Backend
 
