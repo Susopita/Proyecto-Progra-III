@@ -151,7 +151,7 @@ int main()
 
     // Ejemplo de búsqueda por título
     std::string tituloBuscado;
-    std::cout << "Ingrese el título de la película que desea buscar: ";
+    std::cout << "Ingrese el titulo de la pelicula que desea buscar: ";
     std::getline(std::cin, tituloBuscado);
     Pelicula *pelicula = buscarPeliculaPorTitulo(peliculas, tituloBuscado);
     mostrarSinopsis(pelicula);

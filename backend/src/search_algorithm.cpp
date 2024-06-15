@@ -8,6 +8,14 @@
 #include <mutex>
 using namespace std;
 
+struct Pelicula
+{
+    std::string titulo;
+    std::string tag;
+    std::string sinopsis;
+    // Puedes agregar más campos según los datos que contenga tu base de datos
+};
+
 // Función para calcular la similitud entre el título y la frase de búsqueda
 int calcularPuntaje(const string& titulo, const string& frase) {
     istringstream tituloStream(titulo);
@@ -38,22 +46,22 @@ int calcularPuntaje(const string& titulo, const string& frase) {
 }
 
 // Función de búsqueda que retorna los títulos más similares
-vector<string> buscarPeliculas(const vector<string>& baseDeDatos, const string& frase) {
-    map<int, vector<string>, greater<int>> mapaOrdenado;
+vector<Pelicula> buscarPeliculas(const vector<Pelicula>& baseDeDatos, const string& frase) {
+    map<int, vector<Pelicula>, greater<int>> mapaOrdenado;
     mutex mtx;
     vector<thread> threads;
 
-    auto calcularYAgregar = [&](const string& titulo) {
-        int puntaje = calcularPuntaje(titulo, frase);
+    auto calcularYAgregar = [&](const Pelicula& pelicula) {
+        int puntaje = calcularPuntaje(pelicula.titulo, frase);
         if (puntaje > 0) {
             lock_guard<mutex> lock(mtx);
-            mapaOrdenado[puntaje].push_back(titulo);
+            mapaOrdenado[puntaje].push_back(pelicula);
         }
     };
 
     // Crear hilos para procesar en paralelo
-    for (const string& titulo : baseDeDatos) {
-        threads.emplace_back(calcularYAgregar, titulo);
+    for (const Pelicula& pelicula : baseDeDatos) {
+        threads.emplace_back(calcularYAgregar, pelicula);
     }
 
     // Unir los hilos
@@ -62,10 +70,10 @@ vector<string> buscarPeliculas(const vector<string>& baseDeDatos, const string& 
     }
 
     // Recopilar los resultados ordenados por puntaje
-    vector<string> resultados;
+    vector<Pelicula> resultados;
     for (const auto& par : mapaOrdenado) {
-        for (const string& titulo : par.second) {
-            resultados.push_back(titulo);
+        for (const Pelicula& pelicula : par.second) {
+            resultados.push_back(pelicula);
         }
     }
 
@@ -73,27 +81,24 @@ vector<string> buscarPeliculas(const vector<string>& baseDeDatos, const string& 
 }
 
 int main() {
-    // Base de datos de películas/series
-    vector<string> baseDeDatos = {
-        "a",
-        "b",
-        "c",
-        "d",
-        "e"
-    };
+    // Cargar la base de datos desde el archivo CSV
+    vector<Pelicula> baseDeDatos = cargarBaseDeDatos("base_de_datos.csv");
 
     // Leer la frase de búsqueda
     string frase;
-    cout << "Ingrese la Pelicula/Serie: ";
+    cout << "Ingrese la frase de búsqueda: ";
     getline(cin, frase);
 
     // Buscar películas/series similares
-    vector<string> resultados = buscarPeliculas(baseDeDatos, frase);
+    vector<Pelicula> resultados = buscarPeliculas(baseDeDatos, frase);
 
     // Mostrar resultados
     cout << "Resultados encontrados:\n";
-    for (const string& titulo : resultados) {
-        cout << titulo << endl;
+    for (const Pelicula& pelicula : resultados) {
+        cout << "Título: " << pelicula.titulo << endl;
+        cout << "Tag: " << pelicula.tag << endl;
+        cout << "Sinopsis: " << pelicula.sinopsis << endl;
+        cout << endl;
     }
 
     return 0;
