@@ -1,70 +1,100 @@
-#include <algorithm>
+#include <iostream>
 #include <vector>
 #include <map>
-#include <list>
-#include <iostream>
-#include <cmath>
-#include <string.h>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <thread>
+#include <mutex>
 using namespace std;
 
-//SU COMPLEJIDAD DEBE SER MENOR QUE O(n^2). O debe soportar 10^8 operaciones como maximo
+// Función para calcular la similitud entre el título y la frase de búsqueda
+int calcularPuntaje(const string& titulo, const string& frase) {
+    istringstream tituloStream(titulo);
+    istringstream fraseStream(frase);
+    string palabraTitulo, palabraFrase;
+    map<string, int> frecuenciaTitulo, frecuenciaFrase;
 
-/*
-Conceptos: 
-Debe existir un comparador o puntaje de cada titulo de pelicula que va a determinar
-que tan similar es la entrada respecto al titulo o tag de la cada pelicula. 
-(Puntaje 5 >= Puntaje 4 >= Puntaje 20 >=...) 
-
-Va ha existir un orden en el valor de cada pelicula. (Podemos crear un mapa_ordenado, 
-que ordene en base a su puntaje(key) y retorne su titulo(value))
-
-Como hallamos ese puntaje? 
-    Iterativo? - Si puede ser iterativo. Nos enfocamos en el titulo o en la frase
-    Es necesario iterar entre todas las peliculas? - Binary search?
-    Debemos de ordenar?  
-
-ESTRUCTURA GENERAL 1:
-vector<string> data_base; 
-string frase_i;
-cin >> frase_i;
-map<int,string> mapa; 
-P(titulo_i,frase_i) = (int)
-mapa.agregar(P(titulo_i), frase_i);
-
-for(int i=0; i<5;i++){
-    cout << mapa[i].value << endl; 
-}
-
-IDEA 1 [Sort, Brute force] para la funcion P() :Puede que sea en base a un contador de palabras
--Iterar en los titulos de las peliculas;
--Crear un vector de palabas de cada titulo;
--Ordenar las palabras de cada titulo;
--Dentro de cada titulo, buscar si una palabra de la frase esta presente. Suma 1 a su puntaje
--Calculado el puntaje, lo agrega a la lista(binary tree - es un algoritmo que se basa un arbol que compara entre los nodos)
-
-IDEA 2 [Sort, Words]: Si el titulo tiene mas coincidencia de letras. 
--Que pasa si ordenas los 2? 
--Creo que no seria viable por la cantidad de iteraciones
-
-IDEA 3 []
-
-COMO SE VA A PRIORIZAR, IMPLEMENTAR, CREAR EL NUEVO ORDEN CUANDO UNA PELICULA ES RELACIONADA A LAS QUE TE GUSTAN? 
-
--Se concluye con el primer orden y luego aumentamos los puntajes de cada value?
-- Podemos agregarle un +1 o +2 en la iteracion de los titulos antes de agregar la palicula a la lista?  
-
-...
-if(related(vector<string> ver_mas_tarde, titulo_i)){
-    puntaje = puntaje + 2;
-}
-...
-*/
-
-int main(){
-    
-    string frase;
-    while(getline(cin, frase)){
-
+    // Contar la frecuencia de cada palabra en el título
+    while (tituloStream >> palabraTitulo) {
+        frecuenciaTitulo[palabraTitulo]++;
     }
+
+    // Contar la frecuencia de cada palabra en la frase de búsqueda
+    while (fraseStream >> palabraFrase) {
+        frecuenciaFrase[palabraFrase]++;
+    }
+
+    int puntaje = 0;
+
+    // Calcular el puntaje basado en la coincidencia de palabras
+    for (const auto& par : frecuenciaFrase) {
+        if (frecuenciaTitulo.find(par.first) != frecuenciaTitulo.end()) {
+            puntaje += min(par.second, frecuenciaTitulo[par.first]);
+        }
+    }
+
+    return puntaje;
+}
+
+// Función de búsqueda que retorna los títulos más similares
+vector<string> buscarPeliculas(const vector<string>& baseDeDatos, const string& frase) {
+    map<int, vector<string>, greater<int>> mapaOrdenado;
+    mutex mtx;
+    vector<thread> threads;
+
+    auto calcularYAgregar = [&](const string& titulo) {
+        int puntaje = calcularPuntaje(titulo, frase);
+        if (puntaje > 0) {
+            lock_guard<mutex> lock(mtx);
+            mapaOrdenado[puntaje].push_back(titulo);
+        }
+    };
+
+    // Crear hilos para procesar en paralelo
+    for (const string& titulo : baseDeDatos) {
+        threads.emplace_back(calcularYAgregar, titulo);
+    }
+
+    // Unir los hilos
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    // Recopilar los resultados ordenados por puntaje
+    vector<string> resultados;
+    for (const auto& par : mapaOrdenado) {
+        for (const string& titulo : par.second) {
+            resultados.push_back(titulo);
+        }
+    }
+
+    return resultados;
+}
+
+int main() {
+    // Base de datos de películas/series
+    vector<string> baseDeDatos = {
+        "a",
+        "b",
+        "c",
+        "d",
+        "e"
+    };
+
+    // Leer la frase de búsqueda
+    string frase;
+    cout << "Ingrese la Pelicula/Serie: ";
+    getline(cin, frase);
+
+    // Buscar películas/series similares
+    vector<string> resultados = buscarPeliculas(baseDeDatos, frase);
+
+    // Mostrar resultados
+    cout << "Resultados encontrados:\n";
+    for (const string& titulo : resultados) {
+        cout << titulo << endl;
+    }
+
     return 0;
 }
