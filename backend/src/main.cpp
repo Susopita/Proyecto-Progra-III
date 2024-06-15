@@ -4,13 +4,13 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include "search_algorithm.h"  // Incluir el header del archivo de búsqueda
 
 struct Pelicula
 {
     std::string titulo;
     std::string tag;
     std::string sinopsis;
-    // Puedes agregar más campos según los datos que contenga tu base de datos
 };
 
 // Función para cargar la base de datos desde un archivo CSV
@@ -45,7 +45,7 @@ std::vector<Pelicula> cargarBaseDeDatos(const std::string &nombreArchivo)
 // Función para buscar una película por título
 Pelicula *buscarPeliculaPorTitulo(const std::vector<Pelicula> &peliculas, const std::string &tituloBuscado)
 {
-    for (Pelicula pelicula : peliculas)
+    for (Pelicula &pelicula : peliculas)
     {
         if (pelicula.titulo == tituloBuscado)
         {
@@ -151,7 +151,7 @@ int main()
 
     // Ejemplo de búsqueda por título
     std::string tituloBuscado;
-    std::cout << "Ingrese el titulo de la pelicula que desea buscar: ";
+    std::cout << "Ingrese el título de la película que desea buscar: ";
     std::getline(std::cin, tituloBuscado);
     Pelicula *pelicula = buscarPeliculaPorTitulo(peliculas, tituloBuscado);
     mostrarSinopsis(pelicula);
@@ -167,6 +167,23 @@ int main()
 
     // Mostrar películas similares a las que el usuario le ha dado "Me gusta"
     mostrarPeliculasSimilares(peliculasGustadas, peliculas);
+
+    // Ejemplo de búsqueda similar con concurrencia
+    std::string frase;
+    std::cout << "Ingrese la frase de búsqueda: ";
+    std::getline(std::cin, frase);
+
+    // Buscar películas/series similares
+    std::vector<Pelicula> resultados = buscarPeliculas(peliculas, frase);
+
+    // Mostrar resultados
+    std::cout << "Resultados encontrados:\n";
+    for (const Pelicula& pelicula : resultados) {
+        std::cout << "Título: " << pelicula.titulo << std::endl;
+        std::cout << "Tag: " << pelicula.tag << std::endl;
+        std::cout << "Sinopsis: " << pelicula.sinopsis << std::endl;
+        std::cout << std::endl;
+    }
 
     return 0;
 }
