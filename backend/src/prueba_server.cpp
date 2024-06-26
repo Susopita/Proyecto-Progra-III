@@ -13,7 +13,7 @@ int main()
         cerr << "Error al crear socket" << endl;
         return 1;
     }
-
+    // tyy
     struct sockaddr_in serverAddr;
 
     serverAddr.sin_family = AF_INET;
