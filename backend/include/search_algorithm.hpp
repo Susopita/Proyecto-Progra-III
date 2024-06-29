@@ -9,6 +9,10 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <set>
+#include <unordered_set>
+#include <map>
+#include <unordered_map>
 
 struct Pelicula
 {
@@ -26,5 +30,8 @@ std::vector<Pelicula> buscarPeliculas(const std::vector<Pelicula>& baseDeDatos, 
 
 // Función para cargar la base de datos desde un archivo CSV
 std::vector<Pelicula> cargarBaseDeDatos(const std::string &nombreArchivo);
+
+//Funcion para agregar a "Ver mas tarde"  
+void agregar_Pelicula(const Pelicula& Peli, std::vector<Pelicula> Ver_mas_tarde); 
 
 #endif // SEARCH_ALGORITHM_H
