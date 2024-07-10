@@ -9,13 +9,25 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <unordered_map>
+#include <unordered_set>
+#include <set>
+#include <fstream>
 
+using namespace std; 
 struct Pelicula
 {
+    std::string id;
     std::string titulo;
-    std::string tag;
+    std::string tags;
     std::string sinopsis;
+    std::string split;
+    std::string sinop_src; 
+
     // Puedes agregar más campos según los datos que contenga tu base de datos
+
+    Pelicula(string i, string ti, string tgs, string sin, string spl, string sin_s):id(i),titulo(ti),tags(tgs), sinopsis(sin), split(spl), sinop_src(sin_s){}
+    Pelicula(){}
 };
 
 // Función para calcular la similitud entre el título y la frase de búsqueda
@@ -25,6 +37,7 @@ int calcularPuntaje(const std::string& titulo, const std::string& frase);
 std::vector<Pelicula> buscarPeliculas(const std::vector<Pelicula>& baseDeDatos, const std::string& frase);
 
 // Función para cargar la base de datos desde un archivo CSV
-std::vector<Pelicula> cargarBaseDeDatos(const std::string &nombreArchivo);
+//std::vector<Pelicula> cargarBaseDeDatos(const std::string &nombreArchivo);
+
 
 #endif // SEARCH_ALGORITHM_H
