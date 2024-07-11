@@ -28,6 +28,7 @@ struct Pelicula
 
     Pelicula(string i, string ti, string tgs, string sin, string spl, string sin_s):id(i),titulo(ti),tags(tgs), sinopsis(sin), split(spl), sinop_src(sin_s){}
     Pelicula(){}
+    
 };
 
 // Función para calcular la similitud entre el título y la frase de búsqueda

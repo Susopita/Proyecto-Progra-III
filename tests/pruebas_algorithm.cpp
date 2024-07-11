@@ -42,11 +42,11 @@ class ST{ //Va a existir un ST para cada letra de abecedario (lo mas probable)
     public:
     ST(char c):letra_inicial(c){}
     //void crearRama(string s); 
-    //Nodo* buscarNodo(string s); //debemos tener un recuento de donde debe estar este char
+    Nodo* buscarNodo(string s); //debemos tener un recuento de donde debe estar este char
     //unordered_set <Pelicula*> retornarpeliculas(string s);//Lo podemos agregar a buscar nodo 
 }; 
 /*
-void ST::crearRama(string s){
+void ST::crearRama(string s){ // por cada palabra, crea un camino, que tiene nodos. Y cada nodo de ese camino tiene a esa pelicula.
     // Insertaremos la pelicula en cada creacion de nodo y crearemos los nodos
     
 }
@@ -67,7 +67,8 @@ unordered_set <Pelicula*> ST::retornarpeliculas(string s){
 class Admin{ //Para que quiero una instancia de una clase? 
     private:// Singleton
     Admin(){} 
-    static Admin* ADMIN_0; 
+    static Admin* ADMIN_0;
+    unique_ptr<int> f; 
     vector<Pelicula*> Base_de_datos; //Solo una base de datos 
     //una lista de peliculas que me gustan
     vector<Pelicula*> Pelis_me_gusta; 
@@ -79,26 +80,171 @@ class Admin{ //Para que quiero una instancia de una clase?
     
     public:
 
-    void ProcesarDatos(ifstream &archivo_csv); //Convertir csv a vector<Pelicula>
+    static Admin* getInstance();
 
-    //void agregar_pelicula_me_gusta(); //Patron Builder: Como se puede relacion esto? 
+    void ProcesarDatos(ifstream &archivo_csv); //Convertir csv a vector<Pelicula>
+    /*
+    unordered_set<Pelicula*> RetornarPeliculas(const string s){
+        ST Arbol = mapaSearchTrees[s[0]]; 
+        Nodo* Nodo_final= Arbol.buscarNodo(s); 
+        return Nodo_final->getPeliculas(); 
+    }
+    */
+    //void agregar_pelicula_me_gusta(); //Patron Builder: Como se puede relacionar esto? 
 
     //void agregar_pelicula_vermastarde();
+    /*
+    void Busqueda_titulos(){ //Que pasa si insertamos frases? los espacios contarian como una sola palabra? 
+        unordered_map<Pelicula*, int> apariciones; //Cono puedes ordenarlos en el mapa, si ordena en funcion del .first
+        string palabra; 
+        cout << "Ingresar frase: "; 
+        while (cin >> palabra){
+            unordered_set<Pelicula*> Pelis_temp = RetornarPeliculas(palabra);
+            for(auto it = Pelis_temp.begin(); it != Pelis_temp.end(); it++){
+                apariciones[*it] = apariciones[*it] + 1;
+            }
+        } 
+        vector<pair<Pelicula*, int>> Pelis_coincidentes(apariciones.begin(), apariciones.end());
+        sort(Pelis_coincidentes.begin(), Pelis_coincidentes.end(), [](pair<Pelicula*,int> p1, pair<Pelicula*,int> p2){
+            return p1.second < p2.second;
+        }); //Ordena el vector por apariciones
 
-    static Admin* getInstance(){ //Patron de diseno: Singleton 
-        if (ADMIN_0 == nullptr)
+        //Lo siguiente seria la impresion de las peliculas en el GUI. 
+        
+    }*/
+    
+    void imprimir_BD(){
+        for (Pelicula* P: Base_de_datos)
         {
-            Admin* AD = new Admin();
-            ADMIN_0 = AD;
+            cout << "ID: " << P->id << endl;
+            cout << "Titulo: " << P->titulo << endl;
+            cout << "Resena muy larga para imprimirla" << endl; 
+            cout << "Tags: " << P->tags << endl;
         }
-        return ADMIN_0; 
     }
-    void Busqueda_titulos(string palabra){ //Que pasa si insertamos frases? los espacios contarian como una sola palabra? 
-        /*
+
+    void eliminar_BD(){
+        for(auto e:Base_de_datos){
+            delete e;
+        }
+    }
+}; 
+
+Admin* Admin::ADMIN_0 = nullptr; 
+
+Admin* Admin::getInstance(){
+    if(ADMIN_0==nullptr){
+        ADMIN_0 = new Admin();
+    }
+    return ADMIN_0; 
+}
+
+void Admin::ProcesarDatos(ifstream& archivo_csv){
+    //Podemos utilizar threads, dividiendo la base de datos en la cantidad de threads posibles y utilizar <future> para
+    //retornar un vector<Pelicula*> que pueda ser pusheado a la base de datos. 
+
+    if(!archivo_csv.is_open()){
+        cerr << "Error al abrir el archivo." << endl;
+    }
+    int atributos = 0; 
+    Pelicula* P = new Pelicula();
+    string linea;
+    while (getline(archivo_csv, linea, '\n')){
+        string oracion;
+        istringstream ss(linea);
+        vector<string> fila;
+        while (getline(ss,oracion,',')) 
+        {
+            if(oracion.front()=='"'){
+                string temp;
+                temp = temp +oracion;
+                while (getline(archivo_csv,oracion,','))
+                {
+                    temp = temp + ',' + oracion;
+                    if(oracion.back()=='"'){
+                        break;
+                    }
+                }
+                oracion = temp;
+            }
+            fila.push_back(oracion);
+            atributos++;
+
+            if(fila.size() >= 6){
+                P->id = fila[0];
+                P->titulo = fila[1];
+                P->sinopsis = fila[2];
+                P->tags = fila[3];
+                P->split = fila[4];
+                P->sinop_src = fila[5];
+                Base_de_datos.push_back(P);
+                fila = {}; 
+                P = new Pelicula(); 
+            }
+        }
+    }
+    
+
+    /*
+    while(getline(archivo_csv,oracion,',')){
+        if (oracion.front()=='"')
+        {
+            string temp;
+            temp = temp +oracion;
+            while (getline(archivo_csv,oracion,','))
+            {
+                temp = temp + ',' + oracion;
+                if(oracion.back()=='"'){
+                    break;
+                }
+            }
+            oracion = temp;
+        }
+        atributos++; 
+        fila.push_back(oracion);
+
+        if(fila.size() >= 6){
+            P->id = fila[0];
+            P->titulo = fila[1];
+            P->sinopsis = fila[2];
+            P->tags = fila[3];
+            P->split = fila[4];
+            P->sinop_src = fila[5];
+            Base_de_datos.push_back(P);
+            fila = {}; 
+            P = new Pelicula(); 
+        }
+        
+    }
+    */
+    cout << "Cantidad de peliculas: " << Base_de_datos.size() << endl;
+    cout << "Cantidad de atributos en BD: " << atributos << endl; 
+    cout << "Id: "<< Base_de_datos[1]->id << endl;
+    cout << "Titulo: " << Base_de_datos[1]->titulo << endl; 
+    cout << "Sinopsis: "<< Base_de_datos[1]->sinopsis << endl; 
+    cout << "Tags: " << Base_de_datos[0]->tags << endl; 
+    cout << "Split: " << Base_de_datos[0]->split << endl;
+    cout << "Source: " << Base_de_datos[0]->sinop_src << endl; 
+    delete P; 
+}
+
+
+
+int main(){
+    ifstream archivo("C:/Users/diego/OneDrive/Escritorio/Git Proyects/Proyecto-Progra-III/backend/resources/data/base_de_datos.csv", std::ios::in);
+    Admin* ADMIN = Admin::getInstance();
+    ADMIN->ProcesarDatos(archivo);
+    ADMIN->eliminar_BD();
+    delete ADMIN;
+    archivo.close(); 
+    return 0; 
+}
+
+/*
         1) Podemos utilizar la idea del profesor de generar un puntero por cada letra y que esta apunte a un titulo o nombre
         que tenga la similitud del camino que esta formando con otros punteros junto a el. 
-        */
-        /*
+        
+        
         2) Los espacio no contarian como una sola palabra, porque el usuario podria insertar palabras desordenadas.
         
         3) Entonces podriamos crear un algoritmo que junte las peliculas que esten en los nodos finales. Como que si
@@ -111,49 +257,3 @@ class Admin{ //Para que quiero una instancia de una clase?
         6) si insertamos rk: deberia de retornar tmb peliculas que tengan el rk y no inicien necesariamente con eso. 
         - Podriamos insertar la pelicula de cada arbol anteriormente llamado en letras anteriores. 
         */
-    }
-    void imprimir_BD(){
-        for (Pelicula* P: Base_de_datos)
-        {
-            cout << "ID: " << P->id << endl;
-            cout << "Titulo: " << P->titulo << endl;
-            cout << "Resena muy larga para imprimirla" << endl; 
-            cout << "Tags: " << P->tags << endl;
-        }
-        
-    }
-}; 
-
-void Admin::ProcesarDatos(ifstream& archivo_csv){//queremos convertir el .csv y vector<Peliculas>
-    //Podemos utilizar threads
-    if(!archivo_csv.is_open()){
-        cerr << "Error al abrir el archivo." << endl;
-    }
-    string linea; 
-    while (getline(archivo_csv, linea, '\n'))
-    {
-        Pelicula* P = new Pelicula();
-        vector<string> fila;
-        istringstream ss(linea);
-        string oracion;
-        while(getline(ss,oracion,',')){
-            fila.push_back(oracion);
-        }
-        if(fila.size() >= 6){
-            P->id = fila[0];
-            P->titulo = fila[1];
-            P->sinopsis = fila[2];
-            //P->tags = fila[3];
-            //P->split = fila[4];
-            //P->sinop_src = fila[5];
-        }
-        Base_de_datos.push_back(P);
-    }
-    cout << "Id: "<< Base_de_datos[0]->id << endl << "Titulo: "<< Base_de_datos[0]->sinopsis << endl;
-}
-
-int main(){
-    ifstream archivo("backend\resources\base_de_datos.csv");
-    Admin* ADMIN = Admin::getInstance();
-    ADMIN->ProcesarDatos(archivo);
-}
