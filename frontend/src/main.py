@@ -1,4 +1,8 @@
 import socket
+from frontend.src.clientSocket import ClientSocket
+
+a = ClientSocket()
+a.enviar_mensaje("a")
 
 c_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
