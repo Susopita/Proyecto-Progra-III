@@ -1,9 +1,10 @@
+from frontend.src.clientSocket import ClientSocket
 import flet as ft
 
-
+sc = ClientSocket()
 
 def main(page: ft.Page):
-    page.title = "Flet counter example"
+    page.title = "Vimex"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
 
     txt_number = ft.TextField(value="0", text_align=ft.TextAlign.RIGHT, width=100)
@@ -28,3 +29,4 @@ def main(page: ft.Page):
     )
 
 ft.app(main)
+sc.cerrar()

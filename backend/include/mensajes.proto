@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package mensaje;
+
+message initBackend
+{
+    bool iniciar = 1;
+}
+
+message Busqueda
+{
+    string texto = 1;
+}
+
+message Pelicula 
+{
+    string titulo = 1;
+    string tag = 2;
+    string sinopsis = 3;
+}
+
+message Resultado_Busqueda
+{
+    repeated Pelicula peliculas = 1;
+}
