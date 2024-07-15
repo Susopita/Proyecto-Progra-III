@@ -13,6 +13,7 @@
 #include <unordered_set>
 #include <set>
 #include <fstream>
+#include <ctime>
 
 using namespace std; 
 struct Pelicula
