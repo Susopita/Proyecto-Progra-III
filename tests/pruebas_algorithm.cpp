@@ -1,19 +1,6 @@
 #include "../backend/include/search_algorithm.hpp"
 using namespace std; 
 
-/*
-class Categorias{
-    private:
-    int numero_de_peliculas;
-    public: 
-    virtual int get_cantidad(){
-        return numero_de_peliculas; 
-    }
-};
-*/
-
-//RECORDATORIO: Implementar todos los destructores de las clases
-
 struct Nodo{
 
     char letra;
@@ -64,14 +51,6 @@ void ST::crearRama(string s, Pelicula* P){ // por cada palabra, crea un camino, 
     }
 }
 
-void Buscar_Nodo_Aux(Nodo* padre, string s, Pelicula* P){
-    if(s.begin() != s.end()){
-        
-
-    }
-}
-
-
 //Podemos crear metodos auxiliares pero eso aumentaria el codigo
 Nodo* ST::buscarNodo(string s){ //Vamos a encontrar conforme vayan leyendo los chars 
     // Suponemos que ya esta la estructura creada y solo profundizamos en el arbol de la primera letra de s
@@ -101,7 +80,7 @@ unordered_set <Pelicula*> ST::retornarpeliculas(string s){
     return vacio; 
 }
 
-void ST::EliminarNodos(Nodo* padre){ //Esto es como una funcion auxiliar- padre:raiz
+void ST::EliminarNodos(Nodo* padre){ 
     if(!padre->mapaNodos.empty()){
         for (pair<char,Nodo*> hijo : padre->mapaNodos)
         {
@@ -122,19 +101,14 @@ class Admin{
     //vector<Pelicula*> Ver_mas_tarde; 
     //una set de categorias de peliculas- puede ser una clase tal que se puedan comunicar con el admin(observer) 
     map<char, ST*> mapaSearchTrees; 
-    //Para identificar si el caracter ingresado es nuevo o no. Y para que lo busque en su arbol determinado
     
     public:
 
     static Admin* getInstance();
 
-    void ProcesarDatos(ifstream &archivo_csv); //Convertir csv a vector<Pelicula>
+    void ProcesarDatos(ifstream &archivo_csv); 
     
-    void Crear_Estructura(); //Podria ser un functor? 
-
-    //void agregar_pelicula_me_gusta(); //Patron Builder: Como se puede relacionar esto? 
-
-    //void agregar_pelicula_vermastarde();
+    void Crear_Estructura(); 
 
     unordered_set<Pelicula*> RetornarPeliculas(const string s);
     
@@ -160,8 +134,6 @@ Admin* Admin::getInstance(){
 }
 
 void Admin::ProcesarDatos(ifstream& archivo_csv){
-    //Podemos utilizar threads, dividiendo la base de datos en la cantidad de threads posibles y utilizar <future> para
-    //retornar un vector<Pelicula*> que pueda ser pusheado a la base de datos. 
 
     if(!archivo_csv.is_open()){
         cerr << "Error al abrir el archivo." << endl;
@@ -172,55 +144,59 @@ void Admin::ProcesarDatos(ifstream& archivo_csv){
     vector<string> fila;
     while (getline(archivo_csv, linea, '\n')){
         string oracion;
-        istringstream ss(linea); // Esto toma la linea. Y si quieres recorrer en archivo_csv, lo recorres en la siguiente linea 
+        istringstream ss(linea);  
         while (getline(ss,oracion,',')) 
         {
             if(oracion.front()=='"'){
-                string temp;
-                temp = temp +oracion;
-                bool amedias = true;
-                while (getline(ss,oracion,','))// Aqui, salta a la proxima fila, por el salto de linea en el getline
-                {
-                    temp = temp + ',' + oracion;
-                    if(oracion.back()=='"'){
-                        amedias = false;
-                        break;
+                
+                if((oracion.back()!= '"') || (oracion.back()=='"' && oracion.substr(0,oracion.length()-1).back() == '"' && oracion.substr(0,oracion.length()-2).back() != '"')){ //Si continuas
+                    string temp;
+                    temp = temp +oracion;
+                    bool amedias = true;
+                    while (getline(ss,oracion,','))
+                    {
+                        temp = temp + ',' + oracion;
+                        if(!((oracion.back()!= '"') || (oracion.back()=='"' && oracion.substr(0,oracion.length()-1).back() == '"' && oracion.substr(0,oracion.length()-2).back() != '"'))){
+                            amedias = false;
+                            break;
+                        }
                     }
-                }
-                //Aqui la condicional del while siosi debe de correrse, asi que se comeria una frase en el getline(...)
-                while (amedias && getline(archivo_csv,oracion,','))// Aqui, salta a la proxima fila, por el salto de linea en el getline
-                {
-                    temp = temp + ',' + oracion;
-                    if(oracion.back()=='"'){
-                        break;
+                    while (amedias && getline(archivo_csv,oracion,','))// Aqui, salta a la proxima fila, por el salto de linea en el getline
+                    {
+                        temp = temp + ',' + oracion;
+                        if(!((oracion.back()!= '"') || (oracion.back()=='"' && oracion.substr(0,oracion.length()-1).back() == '"' && oracion.substr(0,oracion.length()-2).back() != '"'))){
+                            break;
+                        }
                     }
+                    oracion = temp;
                 }
-                oracion = temp;
             }
-            fila.push_back(oracion);
-            atributos++;
+            if(!oracion.empty()){
+                fila.push_back(oracion);
+                atributos++;
 
-            if(fila.size() >= 6){
-                P->id = fila[0];
-                P->titulo = fila[1];
-                P->sinopsis = fila[2];
-                P->tags = fila[3];
-                P->split = fila[4];
-                P->sinop_src = fila[5];
-                Base_de_datos.push_back(P);
-                fila = {}; 
-                P = new Pelicula(); 
+                if(fila.size() >= 6){
+                    P->id = fila[0];
+                    P->titulo = fila[1];
+                    P->sinopsis = fila[2];
+                    P->tags = fila[3];
+                    P->split = fila[4];
+                    P->sinop_src = fila[5];
+                    Base_de_datos.push_back(P);
+                    fila = {}; 
+                    P = new Pelicula(); 
+                }
             }
         }
     }
     cout << "Cantidad de peliculas: " << Base_de_datos.size() << endl;
     cout << "Cantidad de atributos en BD: " << atributos << endl; 
-    cout << "Id: "<< Base_de_datos[4]->id << endl;
-    cout << "Titulo: " << Base_de_datos[4]->titulo << endl; 
-    cout << "Sinopsis: "<< Base_de_datos[4]->sinopsis << endl; 
-    cout << "Tags: " << Base_de_datos[4]->tags << endl; 
-    cout << "Split: " << Base_de_datos[4]->split << endl;
-    cout << "Source: " << Base_de_datos[4]->sinop_src << endl; 
+    cout << "Id: "<< Base_de_datos[50]->id << endl;
+    cout << "Titulo: " << Base_de_datos[50]->titulo << endl; 
+    cout << "Sinopsis: "<< Base_de_datos[50]->sinopsis << endl; 
+    cout << "Tags: " << Base_de_datos[50]->tags << endl; 
+    cout << "Split: " << Base_de_datos[50]->split << endl;
+    cout << "Source: " << Base_de_datos[50]->sinop_src << endl; 
     delete P; 
 }
 
@@ -264,17 +240,21 @@ unordered_set<Pelicula*> Admin::RetornarPeliculas(const string s){
 //FUNCION FINAL
 vector<pair<Pelicula*, int>> Admin::Busqueda_titulos(){ 
         unordered_map<Pelicula*, int> apariciones; //Cono puedes ordenarlos en el mapa, si ordena en funcion del .first
-        string palabra; 
+        string frase; 
         cout << "Ingresar frase: "; //Debe estar aqui en GUI para insertar las frases de busqueda
-        while (cin >> palabra){
+        getline(cin,frase);
+        istringstream ss(frase);
+        string palabra;
+        while (getline(ss,palabra, ' ')){
+            cout << palabra << endl; 
             unordered_set<Pelicula*> Pelis_temp = RetornarPeliculas(palabra);
             for(auto it = Pelis_temp.begin(); it != Pelis_temp.end(); it++){
                 apariciones[*it] = apariciones[*it] + 1;
             }
-        } 
+        }
         vector<pair<Pelicula*, int>> Pelis_coincidentes(apariciones.begin(), apariciones.end());
         //Ordena el vector por apariciones
-        sort(Pelis_coincidentes.begin(), Pelis_coincidentes.end(), [](pair<Pelicula*,int> p1, pair<Pelicula*,int> p2){
+        std::sort(Pelis_coincidentes.begin(), Pelis_coincidentes.end(), [](pair<Pelicula*,int> p1, pair<Pelicula*,int> p2){
             return p1.second < p2.second;
         }); 
         
@@ -303,7 +283,23 @@ int main(){
     ADMIN->ProcesarDatos(archivo);
     ADMIN->Crear_Estructura();
     ADMIN->prueba();
+    vector<pair<Pelicula*,int>> mejores_peliculas_de_du_mundo = ADMIN->Busqueda_titulos();
 
+    if(mejores_peliculas_de_du_mundo.empty()){
+        cout << "No se encontraron peliculas coincidentes :(" << endl;
+    }
+    else{
+        cout << "Primeras peliculas coincidentes: "<< endl;
+        for (int i = 0; i < 5; i++)
+        {
+            cout << i+1 << ") Titulo: "<< mejores_peliculas_de_du_mundo[i].first->id << endl;
+        }
+    }
+
+    for (pair<Pelicula*,int> par : mejores_peliculas_de_du_mundo)
+    {
+        delete par.first;
+    }
     ADMIN->destruir_mapaST();
     ADMIN->eliminar_BD();
     delete ADMIN;
