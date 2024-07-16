@@ -1,5 +1,5 @@
 from http import client
-from clientSocket import ClientSocket
+from clientSocket import ClientSocket # type: ignore
 from socket import AF_INET, SOCK_STREAM
 import flet as ft
 
