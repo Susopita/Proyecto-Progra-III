@@ -85,7 +85,8 @@ Nodo* ST::buscarNodo(string s){ //Se encuentro conforme vayan leyendo los chars
     Nodo* nodo_final = raiz; 
     for(int i=1; i<s.size(); i++){
         if(nodo_final->mapaNodos.find(s[i]) == nodo_final->mapaNodos.end()){
-            return nullptr;
+            cout << "No se encontro completo :(" << endl;
+            return nodo_final;
         }
         nodo_final= nodo_final->mapaNodos[s[i]];
     }
@@ -136,11 +137,6 @@ class Admin{  //Clase adminitradora de toda funcion.
     void eliminar_BD();
 
     void destruir_mapaST();
-
-    void prueba(){
-        cout << mapaSearchTrees['b']->letra_inicial << endl;
-        cout << mapaSearchTrees['b']->raiz->mapaNodos['e']->mapaNodos['a']->mapaNodos['t']->letra << endl;
-    }
 }; 
 
 Admin* Admin::ADMIN_0 = nullptr; 
@@ -208,14 +204,6 @@ void Admin::ProcesarDatos(ifstream& archivo_csv){
             }
         }
     }
-    cout << "Cantidad de peliculas: " << Base_de_datos.size() << endl;
-    cout << "Cantidad de atributos en BD: " << atributos << endl; 
-    cout << "Id: "<< Base_de_datos[50]->id << endl;
-    cout << "Titulo: " << Base_de_datos[50]->titulo << endl; 
-    cout << "Sinopsis: "<< Base_de_datos[50]->sinopsis << endl; 
-    cout << "Tags: " << Base_de_datos[50]->tags << endl; 
-    cout << "Split: " << Base_de_datos[50]->split << endl;
-    cout << "Source: " << Base_de_datos[50]->sinop_src << endl; 
     delete P; 
 }
 
@@ -247,9 +235,15 @@ void Admin::Crear_Estructura(){ //Si o si utilizar threads porque puede ser bien
 }
 
 unordered_set<Pelicula*> Admin::RetornarPeliculas(const string s){ // Obtiene las peliculas del nodo final buscado
-    ST* Arbol = mapaSearchTrees[s[0]]; 
-    Nodo* Nodo_final = Arbol->buscarNodo(s); 
-    return Nodo_final->getPeliculas(); 
+    if(mapaSearchTrees.find(s[0])!= mapaSearchTrees.end()){
+        ST* Arbol = mapaSearchTrees[s[0]]; 
+        Nodo* Nodo_final = Arbol->buscarNodo(s); 
+        return Nodo_final->getPeliculas(); 
+    }
+    else{
+        unordered_set<Pelicula*> vacio = {};
+        return vacio;
+    }
 }
 
 //FUNCION FINAL
@@ -356,7 +350,6 @@ int main(){
 
     ADMIN->Crear_Estructura();
     t1.join();
-    ADMIN->prueba();
     SearchLoggerDecorator loggerDecorator(buscarConDecorador);
     vector<pair<Pelicula*,int>> mejores_peliculas_de_du_mundo = loggerDecorator.buscar(ADMIN);
 
