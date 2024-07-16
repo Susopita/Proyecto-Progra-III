@@ -39,7 +39,7 @@ struct Nodo{
         if(mapaNodos.find(c) == mapaNodos.end()){
             Nodo* nodo = new Nodo(c); //Asigna el char del nodo
             mapaNodos[c] = nodo; //Lo pushea al mapa
-        } // Creo que nunca accedemos al atributo char del nodo 
+        } 
     }
     void agregarPelicula(Pelicula* Peli){ 
         Peliculas.insert(Peli);
@@ -77,7 +77,7 @@ void ST::crearRama(string s, Pelicula* P){ // por cada palabra, crea un camino, 
     }
 }
 
-Nodo* ST::buscarNodo(string s){ //Vamos a encontrar conforme vayan leyendo los chars 
+Nodo* ST::buscarNodo(string s){ //Se encuentro conforme vayan leyendo los chars 
     // Retorna puntero a nodo vacio si no encuentra un char en el arbol siguiendo su camino.
     if(s.empty()){
         return nullptr;
@@ -93,7 +93,7 @@ Nodo* ST::buscarNodo(string s){ //Vamos a encontrar conforme vayan leyendo los c
 }
 
 
-unordered_set <Pelicula*> ST::retornarpeliculas(string s){ 
+unordered_set <Pelicula*> ST::retornarpeliculas(string s){ //Envia o retorna las peliculas del nodo final buscado
     Nodo* nodo; 
     nodo = buscarNodo(s);
     if (nodo != nullptr)
@@ -114,16 +114,11 @@ void ST::EliminarNodos(Nodo* padre){
     delete padre; 
 }
 
-class Admin{  
+class Admin{  //Clase adminitradora de toda funcion. 
     private:
     Admin(){} 
     static Admin* ADMIN_0;
     vector<Pelicula*> Base_de_datos; 
-    //una lista de peliculas que me gustan
-    //vector<Pelicula*> Pelis_me_gusta; 
-    //una lista de peliculas para ver mas tarde
-    //vector<Pelicula*> Ver_mas_tarde; 
-    //una set de categorias de peliculas- puede ser una clase tal que se puedan comunicar con el admin(observer) 
     map<char, ST*> mapaSearchTrees; 
     
     public:
@@ -144,7 +139,7 @@ class Admin{
 
     void prueba(){
         cout << mapaSearchTrees['b']->letra_inicial << endl;
-        //cout << mapaSearchTrees['b']->raiz->mapaNodos['e']->mapaNodos['a']->mapaNodos['t']->letra << endl;
+        cout << mapaSearchTrees['b']->raiz->mapaNodos['e']->mapaNodos['a']->mapaNodos['t']->letra << endl;
     }
 }; 
 
@@ -157,8 +152,8 @@ Admin* Admin::getInstance(){
     return ADMIN_0; 
 }
 
-void Admin::ProcesarDatos(ifstream& archivo_csv){
-
+void Admin::ProcesarDatos(ifstream& archivo_csv){ 
+//El algoritmo de basa en obtener los 6 atributos de cada pelicula y cada que complete 6, se agrega a la Base de Datos
     if(!archivo_csv.is_open()){
         cerr << "Error al abrir el archivo." << endl;
     }
@@ -236,7 +231,7 @@ void Admin::Crear_Estructura(){ //Si o si utilizar threads porque puede ser bien
                 ST* arbol = new ST(palabra[0]);
                 mapaSearchTrees[palabra[0]] = arbol;// Aqui se crearian los arboles si no estan creados
             }
-            mapaSearchTrees[palabra[0]]->crearRama(palabra,e);
+            mapaSearchTrees[palabra[0]]->crearRama(palabra,e); //Creacion de la rama en un arbol en especifico
         }
 
         istringstream s1(e->sinopsis.substr(1,e->sinopsis.length()-2));
@@ -251,7 +246,7 @@ void Admin::Crear_Estructura(){ //Si o si utilizar threads porque puede ser bien
     }
 }
 
-unordered_set<Pelicula*> Admin::RetornarPeliculas(const string s){
+unordered_set<Pelicula*> Admin::RetornarPeliculas(const string s){ // Obtiene las peliculas del nodo final buscado
     ST* Arbol = mapaSearchTrees[s[0]]; 
     Nodo* Nodo_final = Arbol->buscarNodo(s); 
     return Nodo_final->getPeliculas(); 
@@ -259,7 +254,7 @@ unordered_set<Pelicula*> Admin::RetornarPeliculas(const string s){
 
 //FUNCION FINAL
 vector<pair<Pelicula*, int>> Admin::Busqueda_titulos(){ 
-        unordered_map<Pelicula*, int> apariciones; //Cono puedes ordenarlos en el mapa, si ordena en funcion del .first
+        unordered_map<Pelicula*, int> apariciones; 
         string frase; 
         cout << "Ingresar frase: "; //Debe estar aqui en GUI para insertar las frases de busqueda
         getline(cin,frase);
@@ -357,13 +352,13 @@ int main(){
     t_init = chrono::high_resolution_clock :: now();
 
     thread t1(ProcesarDatos_Aux,ref(archivo),ADMIN);
-    //ADMIN->ProcesarDatos(archivo);
     std::this_thread::sleep_for(std::chrono::seconds(2));
 
     ADMIN->Crear_Estructura();
     t1.join();
     ADMIN->prueba();
-    vector<pair<Pelicula*,int>> mejores_peliculas_de_du_mundo = ADMIN->Busqueda_titulos();
+    SearchLoggerDecorator loggerDecorator(buscarConDecorador);
+    vector<pair<Pelicula*,int>> mejores_peliculas_de_du_mundo = loggerDecorator.buscar(ADMIN);
 
     if(mejores_peliculas_de_du_mundo.empty()){
         cout << "No se encontraron peliculas coincidentes :(" << endl;
@@ -391,21 +386,3 @@ int main(){
     archivo.close(); 
     return 0; 
 }
-
-/*
-        1) Podemos utilizar la idea del profesor de generar un puntero por cada letra y que esta apunte a un titulo o nombre
-        que tenga la similitud del camino que esta formando con otros punteros junto a el. 
-        
-        
-        2) Los espacio no contarian como una sola palabra, porque el usuario podria insertar palabras desordenadas.
-        
-        3) Entonces podriamos crear un algoritmo que junte las peliculas que esten en los nodos finales. Como que si
-        encuentra la pelicula en los nodos finales. Pero si no los encuentra en todos pero en algunos si? 
-        - Podemos crear un mapa global que cuente las veces que una pelicula aparece, cuando retornemos el set de peliculas 
-        por cada palabra buscada. 
-    
-        5) Primero parceo: Tendriamos que observar cuales datos se pueden eliminar. 
-
-        6) si insertamos rk: deberia de retornar tmb peliculas que tengan el rk y no inicien necesariamente con eso. 
-        - Podriamos insertar la pelicula de cada arbol anteriormente llamado en letras anteriores. 
-        */
