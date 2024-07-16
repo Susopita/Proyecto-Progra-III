@@ -300,22 +300,20 @@ unordered_set<Pelicula *> Admin::RetornarPeliculas(const string s)
 }
 
 // FUNCION FINAL
-vector<pair<Pelicula *, int>> Admin::Busqueda_titulos()
-{
-    unordered_map<Pelicula *, int> apariciones;
-    string frase;
-    cout << "Ingresar frase: "; // Debe estar aqui en GUI para insertar las frases de busqueda
-    getline(cin, frase);
+vector<Pelicula> Admin::Busqueda_titulos(string frase)
+{                                               // Va a constituir espacio y letras
+    unordered_map<Pelicula *, int> apariciones; // Debe estar aqui en GUI para insertar las frases de busqueda
     istringstream ss(frase);
     string palabra;
     while (getline(ss, palabra, ' '))
     {
+        cout << palabra << endl;
         unordered_set<Pelicula *> Pelis_temp = RetornarPeliculas(palabra);
         if (!Pelis_temp.empty())
         {
             for (auto it = Pelis_temp.begin(); it != Pelis_temp.end(); it++)
             {
-                apariciones[*it]++;
+                apariciones[*it] = apariciones[*it] + 1;
             }
         }
     }
@@ -323,8 +321,13 @@ vector<pair<Pelicula *, int>> Admin::Busqueda_titulos()
     // Ordena el vector por apariciones
     std::sort(Pelis_coincidentes.begin(), Pelis_coincidentes.end(), [](pair<Pelicula *, int> p1, pair<Pelicula *, int> p2)
               { return p1.second > p2.second; });
-
-    return Pelis_coincidentes;
+    // No alteraria el orden
+    vector<Pelicula> Pelis_definitivas;
+    for (auto iter = Pelis_coincidentes.begin(); iter != Pelis_coincidentes.end(); iter++)
+    {
+        Pelis_definitivas.push_back(*((*iter).first));
+    }
+    return Pelis_definitivas;
 
     // Lo siguiente seria la impresion de las peliculas en el GUI.
 }
@@ -351,6 +354,7 @@ void ProcesarDatos_Aux(ifstream &archivo_csv, Admin *ADMIN)
     ADMIN->ProcesarDatos(archivo_csv);
 }
 
+/*
 // Decorator para agregar logueo de búsqueda
 class SearchAlgorithmDecorator
 {
@@ -399,6 +403,7 @@ vector<pair<Pelicula *, int>> buscarConDecorador(Admin *admin)
 {
     return admin->Busqueda_titulos();
 }
+*/
 
 /*
 int main()
