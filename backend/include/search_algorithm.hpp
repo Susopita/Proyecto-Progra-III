@@ -9,10 +9,11 @@
 #include <string>
 #include <thread>
 #include <mutex>
-#include <set>
-#include <unordered_set>
-#include <map>
 #include <unordered_map>
+#include <unordered_set>
+#include <set>
+#include <fstream>
+#include <ctime>
 
 using namespace std;
 struct Pelicula
@@ -37,9 +38,6 @@ int calcularPuntaje(const std::string &titulo, const std::string &frase);
 std::vector<Pelicula> buscarPeliculas(const std::vector<Pelicula> &baseDeDatos, const std::string &frase);
 
 // Función para cargar la base de datos desde un archivo CSV
-std::vector<Pelicula> cargarBaseDeDatos(const std::string &nombreArchivo);
-
-// Funcion para agregar a "Ver mas tarde"
-void agregar_Pelicula(const Pelicula &Peli, std::vector<Pelicula> Ver_mas_tarde);
+// std::vector<Pelicula> cargarBaseDeDatos(const std::string &nombreArchivo);
 
 #endif // SEARCH_ALGORITHM_H

@@ -14,6 +14,18 @@ int main()
     PeliculaBuilder pelibuild;
     ResultadoBusquedaBuilder resultado;
 
+    ifstream archivo("../../backend/resources/data/base_de_datos.csv", std::ios::in);
+    Admin *ADMIN = Admin::getInstance();
+
+    thread t1(ProcesarDatos_Aux, ref(archivo), ADMIN);
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    ADMIN->Crear_Estructura();
+    t1.join();
+
+    SearchLoggerDecorator loggerDecorator(buscarConDecorador);
+    vector<pair<Pelicula *, int>> mejores_peliculas_de_du_mundo = loggerDecorator.buscar(ADMIN);
+
     vector<Pelicula> baseDeDatos = cargarBaseDeDatos("base_de_datos.csv");
     SearchLoggerDecorator loggerDecorator(buscarPeliculas);
 
