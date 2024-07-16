@@ -1,19 +1,14 @@
-import socket
-from frontend.src.clientSocket import ClientSocket
+import mensajes_pb2
 
-a = ClientSocket()
-a.enviar_mensaje("a")
+# Crear un mensaje
+busqueda = mensajes_pb2.Busqueda(texto="hola")
 
-c_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+print(type(busqueda))
+# Serializar el mensaje
+serialized = busqueda.SerializeToString()
+print(serialized)
 
-server_socket = ('127.0.0.1', 8080)
-
-c_socket.connect(server_socket)
-
-try:
-    mes = "Holi desde py :3"
-
-    c_socket.sendall(mes.encode())
-
-finally:
-    c_socket.close()
+# Deserializar el mensaje
+new_busqueda = mensajes_pb2.Busqueda()
+new_busqueda.ParseFromString(serialized)
+print(new_busqueda)

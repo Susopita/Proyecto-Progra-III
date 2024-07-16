@@ -25,24 +25,24 @@ namespace _pbi = ::google::protobuf::internal;
 namespace _fl = ::google::protobuf::internal::field_layout;
 namespace mensaje {
 
-inline constexpr initBackend::Impl_::Impl_(
+inline constexpr conexion::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
-      : iniciar_{false},
+      : estado_{false},
         _cached_size_{0} {}
 
 template <typename>
-PROTOBUF_CONSTEXPR initBackend::initBackend(::_pbi::ConstantInitialized)
+PROTOBUF_CONSTEXPR conexion::conexion(::_pbi::ConstantInitialized)
     : _impl_(::_pbi::ConstantInitialized()) {}
-struct initBackendDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR initBackendDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
-  ~initBackendDefaultTypeInternal() {}
+struct conexionDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR conexionDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~conexionDefaultTypeInternal() {}
   union {
-    initBackend _instance;
+    conexion _instance;
   };
 };
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
-    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 initBackendDefaultTypeInternal _initBackend_default_instance_;
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 conexionDefaultTypeInternal _conexion_default_instance_;
 
 inline constexpr Pelicula::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
@@ -119,14 +119,14 @@ const ::uint32_t
     TableStruct_mensajes_2eproto::offsets[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
         protodesc_cold) = {
         ~0u,  // no _has_bits_
-        PROTOBUF_FIELD_OFFSET(::mensaje::initBackend, _internal_metadata_),
+        PROTOBUF_FIELD_OFFSET(::mensaje::conexion, _internal_metadata_),
         ~0u,  // no _extensions_
         ~0u,  // no _oneof_case_
         ~0u,  // no _weak_field_map_
         ~0u,  // no _inlined_string_donated_
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
-        PROTOBUF_FIELD_OFFSET(::mensaje::initBackend, _impl_.iniciar_),
+        PROTOBUF_FIELD_OFFSET(::mensaje::conexion, _impl_.estado_),
         ~0u,  // no _has_bits_
         PROTOBUF_FIELD_OFFSET(::mensaje::Busqueda, _internal_metadata_),
         ~0u,  // no _extensions_
@@ -160,31 +160,31 @@ const ::uint32_t
 
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
-        {0, -1, -1, sizeof(::mensaje::initBackend)},
+        {0, -1, -1, sizeof(::mensaje::conexion)},
         {9, -1, -1, sizeof(::mensaje::Busqueda)},
         {18, -1, -1, sizeof(::mensaje::Pelicula)},
         {29, -1, -1, sizeof(::mensaje::Resultado_Busqueda)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
-    &::mensaje::_initBackend_default_instance_._instance,
+    &::mensaje::_conexion_default_instance_._instance,
     &::mensaje::_Busqueda_default_instance_._instance,
     &::mensaje::_Pelicula_default_instance_._instance,
     &::mensaje::_Resultado_Busqueda_default_instance_._instance,
 };
 const char descriptor_table_protodef_mensajes_2eproto[] ABSL_ATTRIBUTE_SECTION_VARIABLE(
     protodesc_cold) = {
-    "\n\016mensajes.proto\022\007mensaje\"\036\n\013initBackend"
-    "\022\017\n\007iniciar\030\001 \001(\010\"\031\n\010Busqueda\022\r\n\005texto\030\001"
-    " \001(\t\"9\n\010Pelicula\022\016\n\006titulo\030\001 \001(\t\022\013\n\003tag\030"
-    "\002 \001(\t\022\020\n\010sinopsis\030\003 \001(\t\":\n\022Resultado_Bus"
-    "queda\022$\n\tpeliculas\030\001 \003(\0132\021.mensaje.Pelic"
-    "ulab\006proto3"
+    "\n\016mensajes.proto\022\007mensaje\"\032\n\010conexion\022\016\n"
+    "\006estado\030\001 \001(\010\"\031\n\010Busqueda\022\r\n\005texto\030\001 \001(\t"
+    "\"9\n\010Pelicula\022\016\n\006titulo\030\001 \001(\t\022\013\n\003tag\030\002 \001("
+    "\t\022\020\n\010sinopsis\030\003 \001(\t\":\n\022Resultado_Busqued"
+    "a\022$\n\tpeliculas\030\001 \003(\0132\021.mensaje.Peliculab"
+    "\006proto3"
 };
 static ::absl::once_flag descriptor_table_mensajes_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_mensajes_2eproto = {
     false,
     false,
-    211,
+    207,
     descriptor_table_protodef_mensajes_2eproto,
     "mensajes.proto",
     &descriptor_table_mensajes_2eproto_once,
@@ -200,52 +200,52 @@ PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_mensajes_2epro
 namespace mensaje {
 // ===================================================================
 
-class initBackend::_Internal {
+class conexion::_Internal {
  public:
 };
 
-initBackend::initBackend(::google::protobuf::Arena* arena)
+conexion::conexion(::google::protobuf::Arena* arena)
     : ::google::protobuf::Message(arena) {
   SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:mensaje.initBackend)
+  // @@protoc_insertion_point(arena_constructor:mensaje.conexion)
 }
-initBackend::initBackend(
-    ::google::protobuf::Arena* arena, const initBackend& from)
-    : initBackend(arena) {
+conexion::conexion(
+    ::google::protobuf::Arena* arena, const conexion& from)
+    : conexion(arena) {
   MergeFrom(from);
 }
-inline PROTOBUF_NDEBUG_INLINE initBackend::Impl_::Impl_(
+inline PROTOBUF_NDEBUG_INLINE conexion::Impl_::Impl_(
     ::google::protobuf::internal::InternalVisibility visibility,
     ::google::protobuf::Arena* arena)
       : _cached_size_{0} {}
 
-inline void initBackend::SharedCtor(::_pb::Arena* arena) {
+inline void conexion::SharedCtor(::_pb::Arena* arena) {
   new (&_impl_) Impl_(internal_visibility(), arena);
-  _impl_.iniciar_ = {};
+  _impl_.estado_ = {};
 }
-initBackend::~initBackend() {
-  // @@protoc_insertion_point(destructor:mensaje.initBackend)
+conexion::~conexion() {
+  // @@protoc_insertion_point(destructor:mensaje.conexion)
   _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   SharedDtor();
 }
-inline void initBackend::SharedDtor() {
+inline void conexion::SharedDtor() {
   ABSL_DCHECK(GetArena() == nullptr);
   _impl_.~Impl_();
 }
 
 const ::google::protobuf::MessageLite::ClassData*
-initBackend::GetClassData() const {
+conexion::GetClassData() const {
   PROTOBUF_CONSTINIT static const ::google::protobuf::MessageLite::
       ClassDataFull _data_ = {
           {
               &_table_.header,
               nullptr,  // OnDemandRegisterArenaDtor
               nullptr,  // IsInitialized
-              PROTOBUF_FIELD_OFFSET(initBackend, _impl_._cached_size_),
+              PROTOBUF_FIELD_OFFSET(conexion, _impl_._cached_size_),
               false,
           },
-          &initBackend::MergeImpl,
-          &initBackend::kDescriptorMethods,
+          &conexion::MergeImpl,
+          &conexion::kDescriptorMethods,
           &descriptor_table_mensajes_2eproto,
           nullptr,  // tracker
       };
@@ -254,7 +254,7 @@ initBackend::GetClassData() const {
   return _data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 0, 0, 2> initBackend::_table_ = {
+const ::_pbi::TcParseTable<0, 1, 0, 0, 2> conexion::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
@@ -265,21 +265,21 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> initBackend::_table_ = {
     1,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
-    &_initBackend_default_instance_._instance,
+    &_conexion_default_instance_._instance,
     nullptr,  // post_loop_handler
     ::_pbi::TcParser::GenericFallback,  // fallback
     #ifdef PROTOBUF_PREFETCH_PARSE_TABLE
-    ::_pbi::TcParser::GetTable<::mensaje::initBackend>(),  // to_prefetch
+    ::_pbi::TcParser::GetTable<::mensaje::conexion>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // bool iniciar = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(initBackend, _impl_.iniciar_), 63>(),
-     {8, 63, 0, PROTOBUF_FIELD_OFFSET(initBackend, _impl_.iniciar_)}},
+    // bool estado = 1;
+    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(conexion, _impl_.estado_), 63>(),
+     {8, 63, 0, PROTOBUF_FIELD_OFFSET(conexion, _impl_.estado_)}},
   }}, {{
     65535, 65535
   }}, {{
-    // bool iniciar = 1;
-    {PROTOBUF_FIELD_OFFSET(initBackend, _impl_.iniciar_), 0, 0,
+    // bool estado = 1;
+    {PROTOBUF_FIELD_OFFSET(conexion, _impl_.estado_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kBool)},
   }},
   // no aux_entries
@@ -287,29 +287,29 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> initBackend::_table_ = {
   }},
 };
 
-PROTOBUF_NOINLINE void initBackend::Clear() {
-// @@protoc_insertion_point(message_clear_start:mensaje.initBackend)
+PROTOBUF_NOINLINE void conexion::Clear() {
+// @@protoc_insertion_point(message_clear_start:mensaje.conexion)
   ::google::protobuf::internal::TSanWrite(&_impl_);
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.iniciar_ = false;
+  _impl_.estado_ = false;
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
 
-::uint8_t* initBackend::_InternalSerialize(
+::uint8_t* conexion::_InternalSerialize(
     ::uint8_t* target,
     ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:mensaje.initBackend)
+  // @@protoc_insertion_point(serialize_to_array_start:mensaje.conexion)
   ::uint32_t cached_has_bits = 0;
   (void)cached_has_bits;
 
-  // bool iniciar = 1;
-  if (this->_internal_iniciar() != 0) {
+  // bool estado = 1;
+  if (this->_internal_estado() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteBoolToArray(
-        1, this->_internal_iniciar(), target);
+        1, this->_internal_estado(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -317,20 +317,20 @@ PROTOBUF_NOINLINE void initBackend::Clear() {
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
             _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:mensaje.initBackend)
+  // @@protoc_insertion_point(serialize_to_array_end:mensaje.conexion)
   return target;
 }
 
-::size_t initBackend::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:mensaje.initBackend)
+::size_t conexion::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:mensaje.conexion)
   ::size_t total_size = 0;
 
   ::uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // bool iniciar = 1;
-  if (this->_internal_iniciar() != 0) {
+  // bool estado = 1;
+  if (this->_internal_estado() != 0) {
     total_size += 2;
   }
 
@@ -338,35 +338,35 @@ PROTOBUF_NOINLINE void initBackend::Clear() {
 }
 
 
-void initBackend::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
-  auto* const _this = static_cast<initBackend*>(&to_msg);
-  auto& from = static_cast<const initBackend&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:mensaje.initBackend)
+void conexion::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google::protobuf::MessageLite& from_msg) {
+  auto* const _this = static_cast<conexion*>(&to_msg);
+  auto& from = static_cast<const conexion&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:mensaje.conexion)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_iniciar() != 0) {
-    _this->_impl_.iniciar_ = from._impl_.iniciar_;
+  if (from._internal_estado() != 0) {
+    _this->_impl_.estado_ = from._impl_.estado_;
   }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void initBackend::CopyFrom(const initBackend& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:mensaje.initBackend)
+void conexion::CopyFrom(const conexion& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:mensaje.conexion)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 
-void initBackend::InternalSwap(initBackend* PROTOBUF_RESTRICT other) {
+void conexion::InternalSwap(conexion* PROTOBUF_RESTRICT other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-        swap(_impl_.iniciar_, other->_impl_.iniciar_);
+        swap(_impl_.estado_, other->_impl_.estado_);
 }
 
-::google::protobuf::Metadata initBackend::GetMetadata() const {
+::google::protobuf::Metadata conexion::GetMetadata() const {
   return ::google::protobuf::Message::GetMetadataImpl(GetClassData()->full());
 }
 // ===================================================================

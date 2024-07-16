@@ -59,9 +59,9 @@ extern PeliculaDefaultTypeInternal _Pelicula_default_instance_;
 class Resultado_Busqueda;
 struct Resultado_BusquedaDefaultTypeInternal;
 extern Resultado_BusquedaDefaultTypeInternal _Resultado_Busqueda_default_instance_;
-class initBackend;
-struct initBackendDefaultTypeInternal;
-extern initBackendDefaultTypeInternal _initBackend_default_instance_;
+class conexion;
+struct conexionDefaultTypeInternal;
+extern conexionDefaultTypeInternal _conexion_default_instance_;
 }  // namespace mensaje
 namespace google {
 namespace protobuf {
@@ -75,23 +75,23 @@ namespace mensaje {
 
 // -------------------------------------------------------------------
 
-class initBackend final : public ::google::protobuf::Message
-/* @@protoc_insertion_point(class_definition:mensaje.initBackend) */ {
+class conexion final : public ::google::protobuf::Message
+/* @@protoc_insertion_point(class_definition:mensaje.conexion) */ {
  public:
-  inline initBackend() : initBackend(nullptr) {}
-  ~initBackend() override;
+  inline conexion() : conexion(nullptr) {}
+  ~conexion() override;
   template <typename = void>
-  explicit PROTOBUF_CONSTEXPR initBackend(
+  explicit PROTOBUF_CONSTEXPR conexion(
       ::google::protobuf::internal::ConstantInitialized);
 
-  inline initBackend(const initBackend& from) : initBackend(nullptr, from) {}
-  inline initBackend(initBackend&& from) noexcept
-      : initBackend(nullptr, std::move(from)) {}
-  inline initBackend& operator=(const initBackend& from) {
+  inline conexion(const conexion& from) : conexion(nullptr, from) {}
+  inline conexion(conexion&& from) noexcept
+      : conexion(nullptr, std::move(from)) {}
+  inline conexion& operator=(const conexion& from) {
     CopyFrom(from);
     return *this;
   }
-  inline initBackend& operator=(initBackend&& from) noexcept {
+  inline conexion& operator=(conexion&& from) noexcept {
     if (this == &from) return *this;
     if (GetArena() == from.GetArena()
 #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -123,16 +123,16 @@ class initBackend final : public ::google::protobuf::Message
   static const ::google::protobuf::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const initBackend& default_instance() {
+  static const conexion& default_instance() {
     return *internal_default_instance();
   }
-  static inline const initBackend* internal_default_instance() {
-    return reinterpret_cast<const initBackend*>(
-        &_initBackend_default_instance_);
+  static inline const conexion* internal_default_instance() {
+    return reinterpret_cast<const conexion*>(
+        &_conexion_default_instance_);
   }
   static constexpr int kIndexInFileMessages = 0;
-  friend void swap(initBackend& a, initBackend& b) { a.Swap(&b); }
-  inline void Swap(initBackend* other) {
+  friend void swap(conexion& a, conexion& b) { a.Swap(&b); }
+  inline void Swap(conexion* other) {
     if (other == this) return;
 #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetArena() != nullptr && GetArena() == other->GetArena()) {
@@ -144,7 +144,7 @@ class initBackend final : public ::google::protobuf::Message
       ::google::protobuf::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(initBackend* other) {
+  void UnsafeArenaSwap(conexion* other) {
     if (other == this) return;
     ABSL_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -152,13 +152,13 @@ class initBackend final : public ::google::protobuf::Message
 
   // implements Message ----------------------------------------------
 
-  initBackend* New(::google::protobuf::Arena* arena = nullptr) const final {
-    return ::google::protobuf::Message::DefaultConstruct<initBackend>(arena);
+  conexion* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return ::google::protobuf::Message::DefaultConstruct<conexion>(arena);
   }
   using ::google::protobuf::Message::CopyFrom;
-  void CopyFrom(const initBackend& from);
+  void CopyFrom(const conexion& from);
   using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom(const initBackend& from) { initBackend::MergeImpl(*this, from); }
+  void MergeFrom(const conexion& from) { conexion::MergeImpl(*this, from); }
 
   private:
   static void MergeImpl(
@@ -179,16 +179,16 @@ class initBackend final : public ::google::protobuf::Message
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void InternalSwap(initBackend* other);
+  void InternalSwap(conexion* other);
  private:
   friend class ::google::protobuf::internal::AnyMetadata;
-  static ::absl::string_view FullMessageName() { return "mensaje.initBackend"; }
+  static ::absl::string_view FullMessageName() { return "mensaje.conexion"; }
 
  protected:
-  explicit initBackend(::google::protobuf::Arena* arena);
-  initBackend(::google::protobuf::Arena* arena, const initBackend& from);
-  initBackend(::google::protobuf::Arena* arena, initBackend&& from) noexcept
-      : initBackend(arena) {
+  explicit conexion(::google::protobuf::Arena* arena);
+  conexion(::google::protobuf::Arena* arena, const conexion& from);
+  conexion(::google::protobuf::Arena* arena, conexion&& from) noexcept
+      : conexion(arena) {
     *this = ::std::move(from);
   }
   const ::google::protobuf::Message::ClassData* GetClassData() const final;
@@ -199,19 +199,19 @@ class initBackend final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kIniciarFieldNumber = 1,
+    kEstadoFieldNumber = 1,
   };
-  // bool iniciar = 1;
-  void clear_iniciar() ;
-  bool iniciar() const;
-  void set_iniciar(bool value);
+  // bool estado = 1;
+  void clear_estado() ;
+  bool estado() const;
+  void set_estado(bool value);
 
   private:
-  bool _internal_iniciar() const;
-  void _internal_set_iniciar(bool value);
+  bool _internal_estado() const;
+  void _internal_set_estado(bool value);
 
   public:
-  // @@protoc_insertion_point(class_scope:mensaje.initBackend)
+  // @@protoc_insertion_point(class_scope:mensaje.conexion)
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
@@ -221,7 +221,7 @@ class initBackend final : public ::google::protobuf::Message
       _table_;
 
   static constexpr const void* _raw_default_instance_ =
-      &_initBackend_default_instance_;
+      &_conexion_default_instance_;
 
   friend class ::google::protobuf::MessageLite;
   friend class ::google::protobuf::Arena;
@@ -236,8 +236,8 @@ class initBackend final : public ::google::protobuf::Message
                           ::google::protobuf::Arena* arena);
     inline explicit Impl_(::google::protobuf::internal::InternalVisibility visibility,
                           ::google::protobuf::Arena* arena, const Impl_& from,
-                          const initBackend& from_msg);
-    bool iniciar_;
+                          const conexion& from_msg);
+    bool estado_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -827,28 +827,28 @@ class Resultado_Busqueda final : public ::google::protobuf::Message
 #endif  // __GNUC__
 // -------------------------------------------------------------------
 
-// initBackend
+// conexion
 
-// bool iniciar = 1;
-inline void initBackend::clear_iniciar() {
+// bool estado = 1;
+inline void conexion::clear_estado() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.iniciar_ = false;
+  _impl_.estado_ = false;
 }
-inline bool initBackend::iniciar() const {
-  // @@protoc_insertion_point(field_get:mensaje.initBackend.iniciar)
-  return _internal_iniciar();
+inline bool conexion::estado() const {
+  // @@protoc_insertion_point(field_get:mensaje.conexion.estado)
+  return _internal_estado();
 }
-inline void initBackend::set_iniciar(bool value) {
-  _internal_set_iniciar(value);
-  // @@protoc_insertion_point(field_set:mensaje.initBackend.iniciar)
+inline void conexion::set_estado(bool value) {
+  _internal_set_estado(value);
+  // @@protoc_insertion_point(field_set:mensaje.conexion.estado)
 }
-inline bool initBackend::_internal_iniciar() const {
+inline bool conexion::_internal_estado() const {
   ::google::protobuf::internal::TSanRead(&_impl_);
-  return _impl_.iniciar_;
+  return _impl_.estado_;
 }
-inline void initBackend::_internal_set_iniciar(bool value) {
+inline void conexion::_internal_set_estado(bool value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.iniciar_ = value;
+  _impl_.estado_ = value;
 }
 
 // -------------------------------------------------------------------

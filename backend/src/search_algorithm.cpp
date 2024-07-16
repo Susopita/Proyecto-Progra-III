@@ -1,4 +1,3 @@
-#include "include/search_algorithm.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -10,7 +9,7 @@
 #include <unordered_set>
 #include <thread>
 #include <mutex>
-#include "include/search_algorithm.hpp"
+#include "../include/search_algorithm.hpp"
 using namespace std;
 
 // Función para calcular la similitud entre el título y la frase de búsqueda
@@ -132,7 +131,7 @@ private:
         logFile.close();
     }
 };
-
+/*
 int main()
 {
     // Ejemplo
@@ -149,10 +148,11 @@ int main()
     for (const Pelicula &pelicula : resultados)
     {
         cout << "Título: " << pelicula.titulo << endl;
-        cout << "Tag: " << pelicula.tag << endl;
+        cout << "Tag: " << pelicula.tags << endl;
         cout << "Sinopsis: " << pelicula.sinopsis << endl;
         cout << endl;
     }
 
     return 0;
 }
+*/

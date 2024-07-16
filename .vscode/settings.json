@@ -89,5 +89,10 @@
     "python.analysis.typeCheckingMode": "basic",
     "python.analysis.autoImportCompletions": true,
     "python.analysis.stubPath": "./frontend/include",
-    "code-runner.enableAppInsights": false
+    "code-runner.enableAppInsights": false,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none",
+        "reportMissingTypeStubs": "none",
+        "reportAttributeAccessIssue": "information"
+    }
 }
