@@ -3,7 +3,10 @@
 #include <fstream>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 #include <cstdlib>
+#include <thread>
+#include <future>
 #include <map>
 using namespace std;
 
@@ -27,59 +30,8 @@ las peliculas que mas se repiten en los set<Peliculas> de esas varias palabras.
 
 */
 
-struct Nodo
-{
-
-    char letra;
-    unordered_map<char, Nodo *> mapaNodos; // Mapa de nodos que van a ser pusheados por un recorrido en la base de datos.
-    unordered_set<Pelicula *> Peliculas;   // Peliculas que va a tener cada nodo
-
-    Nodo(char c) : letra(c)
-    {
-        mapaNodos = {};
-        Peliculas = {};
-    }
-    Nodo()
-    {
-        mapaNodos = {};
-        Peliculas = {};
-    }
-    void agregarNodo(char c)
-    {
-        if (mapaNodos.find(c) == mapaNodos.end())
-        {
-            Nodo *nodo = new Nodo(c); // Asigna el char del nodo
-            mapaNodos[c] = nodo;      // Lo pushea al mapa
-        }
-    }
-    void agregarPelicula(Pelicula *Peli)
-    {
-        Peliculas.insert(Peli);
-    }
-    unordered_set<Pelicula *> getPeliculas()
-    {
-        return Peliculas;
-    }
-};
-
 // Idea inicial: Va a existir un ST para cada letra que sera la raiz de este arbol. Se creara por crearRama()
 // IDEA ROBUSTA: Podriamos llamar consecutivamente al metodo crearRama() en cada sub-string de cada palabra ingresada
-
-struct ST
-{
-    char letra_inicial;
-    Nodo *raiz = nullptr;
-
-    ST(char c) : letra_inicial(c)
-    {
-        raiz = new Nodo(c);
-    }
-    void crearRama(string s, Pelicula *);
-    Nodo *buscarNodo(string s);
-    unordered_set<Pelicula *> retornarpeliculas(string s);
-    // El metodo para eleminar los nodos se va adescontrolar
-    void EliminarNodos(Nodo *padre);
-};
 
 void ST::crearRama(string s, Pelicula *P)
 { // por cada palabra, crea un camino, que tiene nodos. Y cada nodo de ese camino tiene a esa pelicula.
@@ -137,32 +89,6 @@ void ST::EliminarNodos(Nodo *padre)
     delete padre;
 }
 
-class Admin
-{ // Clase adminitradora de toda funcion.
-private:
-    Admin() {}
-    static Admin *ADMIN_0;
-    static vector<Pelicula *> Base_de_datos;
-    static map<char, ST *> mapaSearchTrees;
-
-    static void eliminar_BD();
-
-    static void destruir_mapaST();
-
-    static void cleanup();
-
-public:
-    static Admin *getInstance();
-
-    void ProcesarDatos(ifstream &archivo_csv);
-
-    void Crear_Estructura();
-
-    unordered_set<Pelicula *> RetornarPeliculas(const string s);
-
-    vector<pair<Pelicula *, int>> Busqueda_titulos();
-};
-
 Admin *Admin::ADMIN_0 = nullptr;
 
 Admin *Admin::getInstance()
@@ -177,11 +103,85 @@ Admin *Admin::getInstance()
 
 void Admin::cleanup()
 {
+    ADMIN_0->destruir_mapaST();
+    ADMIN_0->eliminar_BD();
     delete ADMIN_0;
     ADMIN_0 = nullptr;
-    destruir_mapaST();
-    eliminar_BD();
+    cout << "Limpiado" << endl;
 }
+
+/*
+void Admin::ProcesarDatos(std::ifstream &archivo_csv)
+{
+    if (!archivo_csv.is_open())
+    {
+        std::cerr << "Error al abrir el archivo." << std::endl;
+        return;
+    }
+
+    std::vector<std::future<void>> futures;
+    std::vector<Pelicula *> peliculas_temp;
+    std::mutex mtx;
+
+    auto procesar_linea = [&mtx, &peliculas_temp](const std::string &linea)
+    {
+        std::istringstream ss(linea);
+        std::string oracion;
+        std::vector<std::string> fila;
+
+        while (std::getline(ss, oracion, ','))
+        {
+            if (oracion.front() == '"')
+            {
+                if ((oracion.back() != '"') || (oracion.back() == '"' && oracion.substr(0, oracion.length() - 1).back() == '"' && oracion.substr(0, oracion.length() - 2).back() != '"'))
+                {
+                    std::string temp = oracion;
+                    bool amedias = true;
+                    while (std::getline(ss, oracion, ','))
+                    {
+                        temp += ',' + oracion;
+                        if (!((oracion.back() != '"') || (oracion.back() == '"' && oracion.substr(0, oracion.length() - 1).back() == '"' && oracion.substr(0, oracion.length() - 2).back() != '"')))
+                        {
+                            amedias = false;
+                            break;
+                        }
+                    }
+                    oracion = temp;
+                }
+            }
+            fila.push_back(oracion);
+        }
+
+        if (fila.size() >= 6)
+        {
+            Pelicula *P = new Pelicula();
+            P->id = fila[0];
+            P->titulo = fila[1];
+            P->sinopsis = fila[2];
+            P->tags = fila[3];
+            P->split = fila[4];
+            P->sinop_src = fila[5];
+
+            std::lock_guard<std::mutex> lock(mtx);
+            peliculas_temp.push_back(P);
+        }
+    };
+
+    std::string linea;
+    while (std::getline(archivo_csv, linea))
+    {
+        futures.push_back(std::async(std::launch::async, procesar_linea, linea));
+    }
+
+    for (auto &fut : futures)
+    {
+        fut.get();
+    }
+
+    std::lock_guard<std::mutex> lock(mtx);
+    this->Base_de_datos = std::move(peliculas_temp);
+}
+*/
 
 void Admin::ProcesarDatos(ifstream &archivo_csv)
 {
@@ -241,18 +241,55 @@ void Admin::ProcesarDatos(ifstream &archivo_csv)
                     P->tags = fila[3];
                     P->split = fila[4];
                     P->sinop_src = fila[5];
-                    Base_de_datos.push_back(P);
+                    this->Base_de_datos.push_back(P);
                     fila = {};
-                    delete P;
                     P = new Pelicula();
                 }
             }
         }
     }
-    delete P;
 }
 
 // IDEA ROBUSTA: Aplicar ST::CrearRama(string s) por cada sub-array de s.
+/*
+void Admin::Crear_Estructura()
+{
+    std::vector<std::future<void>> futures;
+    std::mutex mtx;
+
+    auto procesar_pelicula = [this, &mtx](Pelicula *e)
+    {
+        auto procesar_texto = [this, &mtx](const std::string &texto, Pelicula *pelicula)
+        {
+            std::istringstream ss(texto);
+            std::string palabra;
+            while (std::getline(ss, palabra, ' '))
+            {
+                std::lock_guard<std::mutex> lock(mtx);
+                if (mapaSearchTrees.find(palabra[0]) == mapaSearchTrees.end())
+                {
+                    ST *arbol = new ST(palabra[0]);
+                    mapaSearchTrees[palabra[0]] = arbol;
+                }
+                mapaSearchTrees[palabra[0]]->crearRama(palabra, pelicula);
+            }
+        };
+
+        procesar_texto(e->titulo, e);
+        procesar_texto(e->sinopsis.substr(1, e->sinopsis.length() - 2), e);
+    };
+
+    for (Pelicula *e : Base_de_datos)
+    {
+        futures.push_back(std::async(std::launch::async, procesar_pelicula, e));
+    }
+
+    for (auto &fut : futures)
+    {
+        fut.get();
+    }
+}
+*/
 
 void Admin::Crear_Estructura()
 { // Si o si utilizar threads porque puede ser bien lento
@@ -300,7 +337,7 @@ unordered_set<Pelicula *> Admin::RetornarPeliculas(const string s)
 }
 
 // FUNCION FINAL
-vector<Pelicula> Admin::Busqueda_titulos(string frase)
+vector<Pelicula> Admin::Busqueda_titulos(const string &frase)
 {                                               // Va a constituir espacio y letras
     unordered_map<Pelicula *, int> apariciones; // Debe estar aqui en GUI para insertar las frases de busqueda
     istringstream ss(frase);
@@ -323,8 +360,13 @@ vector<Pelicula> Admin::Busqueda_titulos(string frase)
               { return p1.second > p2.second; });
     // No alteraria el orden
     vector<Pelicula> Pelis_definitivas;
+    int peliculas_max_mostrar = 20;
     for (auto iter = Pelis_coincidentes.begin(); iter != Pelis_coincidentes.end(); iter++)
     {
+        if (!peliculas_max_mostrar--)
+        {
+            break;
+        }
         Pelis_definitivas.push_back(*((*iter).first));
     }
     return Pelis_definitivas;
@@ -338,6 +380,7 @@ void Admin::eliminar_BD()
     {
         delete e;
     }
+    Base_de_datos.clear();
 }
 
 void Admin::destruir_mapaST()
@@ -347,6 +390,7 @@ void Admin::destruir_mapaST()
         iter.second->EliminarNodos(iter.second->raiz);
         delete iter.second;
     }
+    mapaSearchTrees.clear();
 }
 
 void ProcesarDatos_Aux(ifstream &archivo_csv, Admin *ADMIN)

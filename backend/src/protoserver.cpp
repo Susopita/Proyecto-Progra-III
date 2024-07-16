@@ -53,7 +53,7 @@ bool ProtoServer::protocolo_comunicacion_recv(std::string &mensaje)
     int bytes_received = 0;
     int total_bytes_received = 0;
     auto start_time = std::chrono::steady_clock::now();
-    const auto timeout_duration = std::chrono::seconds(5); // Temporizador de 5 segundos
+    const auto timeout_duration = std::chrono::seconds(30); // Temporizador de 30 segundos
 
     // Recibir los bytes del tamaño del mensaje
     while (total_bytes_received < sizeof(network_number))

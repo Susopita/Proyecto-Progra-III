@@ -1,4 +1,3 @@
-from http import client
 from clientSocket import ClientSocket # type: ignore
 from socket import AF_INET, SOCK_STREAM
 import flet as ft
@@ -39,10 +38,20 @@ def main(page: ft.Page):
         page.update()
 
     def solicitar_busqueda(e: ft.ControlEvent):
+        print("enviando confirmacion")
+        client_socket.enviar_estado(True)
+        print("Enviando solicitud de busqueda")
         client_socket.enviar_solicitud_busqueda(e.data)
+        print("Esperando resultados")
         result = client_socket.recibir_resultados_busqueda()
+        print("resultados obtenidos:")
+        print(result)
+        for i in result:
+            print(f"Pelicula: {i.titulo}\n\ttags: {i.tag}")
+        dialog_content.value = ""
         for i in result:
             dialog_content.value += f"Pelicula: {i.titulo}\n\ttags: {i.tag}" # type: ignore
+        page.update()
 
     # Configuracion de App
     # Título de la app
@@ -79,5 +88,6 @@ def main(page: ft.Page):
 with client_socket as cliente:
     if cliente.confirmacion_backend():
         ft.app(target=main)
+        cliente.enviar_estado(False)
     else:
         print("Error al iniciar conexion")

@@ -79,7 +79,14 @@
         "memory_resource": "cpp",
         "numeric": "cpp",
         "random": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "charconv": "cpp",
+        "condition_variable": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "chrono": "cpp"
     },
     "debug.showSubSessionsInToolBar": false,
     "debug.terminal.clearBeforeReusing": true,

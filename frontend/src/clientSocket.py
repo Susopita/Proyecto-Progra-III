@@ -1,7 +1,7 @@
-from ast import Bytes
 from inspect import Traceback
 import socket as sc
 from socket import AddressFamily, SocketKind
+from typing import Self
 import mensajes_pb2
 import struct
 import time
@@ -16,10 +16,11 @@ class ClientSocket():
         print('Conexión creada')
 
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         self.client_socket = sc.socket(self.domain_sc, self.tipo_sc)
         self.client_socket.connect((self.address, self.port))
         print('Conexión establecida')
+        return self
 
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -99,6 +100,10 @@ class ClientSocket():
         confirmacion = mensajes_pb2.conexion()
         confirmacion.ParseFromString(confirmacion_bytes)
         return confirmacion.estado
+    
+    def enviar_estado(self, estado):
+        estado = mensajes_pb2.conexion(estado=estado)
+        return self._protocolo_enviar_mensaje(estado.SerializeToString())
     
     def recibir_resultados_busqueda(self):
         try:
