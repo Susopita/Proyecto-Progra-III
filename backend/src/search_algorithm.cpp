@@ -47,6 +47,12 @@ struct Nodo{
     unordered_set <Pelicula*> getPeliculas(){
         return Peliculas; 
     }
+
+    ~Nodo(){
+        for(auto iter = Peliculas.begin(); iter!=Peliculas.end(); iter++){
+            delete *iter;
+        }
+    }
 };  
 
 //Idea inicial: Va a existir un ST para cada letra que sera la raiz de este arbol. Se creara por crearRama()
@@ -64,6 +70,10 @@ struct ST{
     unordered_set <Pelicula*> retornarpeliculas(string s);
     //El metodo para eleminar los nodos se va adescontrolar
     void EliminarNodos(Nodo* padre);
+
+    ~ST(){
+        delete raiz;
+    }
 }; 
 
 void ST::crearRama(string s, Pelicula* P){ // por cada palabra, crea un camino, que tiene nodos. Y cada nodo de ese camino tiene a esa pelicula.
@@ -85,7 +95,6 @@ Nodo* ST::buscarNodo(string s){ //Se encuentro conforme vayan leyendo los chars
     Nodo* nodo_final = raiz; 
     for(int i=1; i<s.size(); i++){
         if(nodo_final->mapaNodos.find(s[i]) == nodo_final->mapaNodos.end()){
-            cout << "No se encontro completo :(" << endl;
             return nodo_final;
         }
         nodo_final= nodo_final->mapaNodos[s[i]];
@@ -132,11 +141,21 @@ class Admin{  //Clase adminitradora de toda funcion.
 
     unordered_set<Pelicula*> RetornarPeliculas(const string s);
     
-    vector<pair<Pelicula*,int>> Busqueda_titulos();
+    vector<Pelicula> Busqueda_titulos(string frase);
 
     void eliminar_BD();
 
     void destruir_mapaST();
+
+    ~Admin(){
+        for(pair<char,ST*> iter : mapaSearchTrees){
+            iter.second->EliminarNodos(iter.second->raiz);
+            delete iter.second;
+        }
+        for(auto e:Base_de_datos){
+            delete e;
+        }
+    }
 }; 
 
 Admin* Admin::ADMIN_0 = nullptr; 
@@ -247,11 +266,8 @@ unordered_set<Pelicula*> Admin::RetornarPeliculas(const string s){ // Obtiene la
 }
 
 //FUNCION FINAL
-vector<pair<Pelicula*, int>> Admin::Busqueda_titulos(){ 
-        unordered_map<Pelicula*, int> apariciones; 
-        string frase; 
-        cout << "Ingresar frase: "; //Debe estar aqui en GUI para insertar las frases de busqueda
-        getline(cin,frase);
+vector<Pelicula> Admin::Busqueda_titulos(string frase){ //Va a constituir espacio y letras
+        unordered_map<Pelicula*, int> apariciones;  //Debe estar aqui en GUI para insertar las frases de busqueda
         istringstream ss(frase);
         string palabra;
         while (getline(ss,palabra, ' ')){
@@ -268,8 +284,12 @@ vector<pair<Pelicula*, int>> Admin::Busqueda_titulos(){
         std::sort(Pelis_coincidentes.begin(), Pelis_coincidentes.end(), [](pair<Pelicula*,int> p1, pair<Pelicula*,int> p2){
             return p1.second > p2.second;
         }); 
-        
-        return Pelis_coincidentes;
+        //No alteraria el orden 
+        vector<Pelicula> Pelis_definitivas; 
+        for(auto iter = Pelis_coincidentes.begin(); iter != Pelis_coincidentes.end(); iter++){
+            Pelis_definitivas.push_back(*((*iter).first)); 
+        }
+        return Pelis_definitivas;
 
         //Lo siguiente seria la impresion de las peliculas en el GUI. 
     }
@@ -292,6 +312,7 @@ void ProcesarDatos_Aux(ifstream &archivo_csv, Admin* ADMIN){
 }
 
 // Decorator para agregar logueo de búsqueda
+/*
 class SearchAlgorithmDecorator
 {
 protected:
@@ -335,23 +356,29 @@ private:
     }
 };
 
-vector<pair<Pelicula*, int>> buscarConDecorador(Admin* admin) {
-    return admin->Busqueda_titulos();
+vector<pair<Pelicula*, int>> buscarConDecorador(Admin* admin, string frase) {
+    return admin->Busqueda_titulos(frase);
 }
-
+*/
 int main(){
     ifstream archivo("C:/Users/diego/OneDrive/Escritorio/Git Proyects/Proyecto-Progra-III/backend/resources/data/base_de_datos.csv", std::ios::in);
     Admin* ADMIN = Admin::getInstance();
     chrono::time_point<chrono::system_clock> t_init, t_fin; 
     t_init = chrono::high_resolution_clock :: now();
 
+    
     thread t1(ProcesarDatos_Aux,ref(archivo),ADMIN);
     std::this_thread::sleep_for(std::chrono::seconds(2));
-
+    
     ADMIN->Crear_Estructura();
     t1.join();
+    /*
     SearchLoggerDecorator loggerDecorator(buscarConDecorador);
     vector<pair<Pelicula*,int>> mejores_peliculas_de_du_mundo = loggerDecorator.buscar(ADMIN);
+    */
+    string s= "Scooby-Doo!"; //Recibida por el servidor 
+    vector<Pelicula> mejores_peliculas_de_du_mundo = ADMIN->Busqueda_titulos(s); 
+    
 
     if(mejores_peliculas_de_du_mundo.empty()){
         cout << "No se encontraron peliculas coincidentes :(" << endl;
@@ -360,13 +387,8 @@ int main(){
         cout << "Primeras peliculas coincidentes: "<< endl;
         for (int i = 0; i < 5; i++)
         {
-            cout << i+1 << ") Titulo: "<< mejores_peliculas_de_du_mundo[i].first->titulo << endl;
+            cout << i+1 << ") Titulo: "<< mejores_peliculas_de_du_mundo[i].titulo << endl;
         }
-    }
-
-    for (pair<Pelicula*,int> par : mejores_peliculas_de_du_mundo)
-    {
-        delete par.first;
     }
 
     t_fin = chrono::high_resolution_clock :: now();
