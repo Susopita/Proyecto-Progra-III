@@ -302,6 +302,53 @@ void ProcesarDatos_Aux(ifstream &archivo_csv, Admin* ADMIN){
     ADMIN->ProcesarDatos(archivo_csv);
 }
 
+// Decorator para agregar logueo de búsqueda
+class SearchAlgorithmDecorator
+{
+protected:
+    vector<pair<Pelicula*, int>> (*searchFunction)(Admin*);
+
+public:
+    SearchAlgorithmDecorator(vector<pair<Pelicula*, int>> (*searchFunction)(Admin*))
+        : searchFunction(searchFunction) {}
+
+    virtual vector<pair<Pelicula*, int>> buscar(Admin* admin)
+    {
+        return searchFunction(admin);
+    }
+};
+
+class SearchLoggerDecorator : public SearchAlgorithmDecorator
+{
+public:
+    SearchLoggerDecorator(vector<pair<Pelicula*, int>> (*searchFunction)(Admin*))
+        : SearchAlgorithmDecorator(searchFunction) {}
+
+    vector<pair<Pelicula*, int>> buscar(Admin* admin) override
+    {
+        auto resultados = SearchAlgorithmDecorator::buscar(admin);
+        logSearch(resultados);
+        return resultados;
+    }
+
+private:
+    void logSearch(const vector<pair<Pelicula*, int>> &resultados)
+    {
+        ofstream logFile("search_log.txt", ios::app);
+        logFile << "Busqueda realizada" << endl;
+        logFile << "Resultados:" << endl;
+        for (const auto &resultado : resultados)
+        {
+            logFile << " - " << resultado.first->titulo << endl;
+        }
+        logFile << "----------------------------------------" << endl;
+        logFile.close();
+    }
+};
+
+vector<pair<Pelicula*, int>> buscarConDecorador(Admin* admin) {
+    return admin->Busqueda_titulos();
+}
 
 int main(){
     ifstream archivo("C:/Users/diego/OneDrive/Escritorio/Git Proyects/Proyecto-Progra-III/backend/resources/data/base_de_datos.csv", std::ios::in);
