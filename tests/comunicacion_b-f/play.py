@@ -2,11 +2,17 @@ import subprocess
 import multiprocessing
 import platform
 import os
+import sys
+import importlib.util
 
 """
 Este script ejecuta automaticamente el backend y el frontend de la aplicación.
 
 Si quieres visualizar la ejecucacion en tiempo real, puedes ejecutar los scripts de forma manual en dos terminales individuales en el siguiente orden:
+
+PD.- Asegurate de tener instalado los paquetes necesarios para la ejecución de ambos scripts.
+    - Flet
+    - Protobuf
 
 -> Terminal 1: (Backend)
 
@@ -29,6 +35,22 @@ Si quieres visualizar la ejecucacion en tiempo real, puedes ejecutar los scripts
             python tests/comunicacion_b-f/test_frontend.py
 """
 
+def esta_instalado(nombre_paquete):
+    paquete_especifico = importlib.util.find_spec(nombre_paquete)
+    return paquete_especifico is not None
+
+def validar_version_python(version_minima, version_maxima):
+    version_actual = sys.version_info[:3]
+    version_min = tuple(map(int, version_minima.split('.')))
+    version_max = tuple(map(int, version_maxima.split('.')))
+
+    if version_min <= version_actual <= version_max:
+        print(f"La versión de Python es {sys.version}. Cumple con los requisitos de versión.")
+        return True
+    else:
+        print(f"La versión de Python es {sys.version}. No cumple con los requisitos de versión ({version_minima} - {version_maxima}).")
+        return False
+
 def ejecutar_comando(comando, nombre_proceso="comando"):
     proceso = subprocess.Popen(comando, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     stdout, stderr = proceso.communicate()
@@ -43,6 +65,30 @@ def ejecutar_comando(comando, nombre_proceso="comando"):
         return False
 
 def main():
+    # Dependencias necesarias para la ejecución de los scripts
+    # Verificar la versión de Python
+    version_minima = "3.8"
+    version_maxima = "3.11.9"
+    if not validar_version_python(version_minima, version_maxima):
+        print("La versión de Python no es compatible con la ejecución de este scripts.")
+        print(f"Requisitos de versión: Python >= {version_minima} y Python < {version_maxima}")
+        sys.exit(1)
+
+    # Verificar si flet está instalado
+    flet_instalado = esta_instalado("flet")
+
+    if not flet_instalado:
+        comandoInstalacionFlet = "pip install flet"
+        subprocess.run(comandoInstalacionFlet, shell=True)
+
+    # Verificar si protobuf está instalado
+    protobuf_instalado = esta_instalado("google.protobuf")
+
+    if not protobuf_instalado:
+        comandoInstalacionProtobuf = "pip install protobuf"
+        subprocess.run(comandoInstalacionProtobuf, shell=True)
+
+
     ruta_actual = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
     sistema = platform.system()
     backend_ejecutable = 'backend.exe' if sistema == 'Windows' else 'backend'
