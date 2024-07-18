@@ -39,11 +39,17 @@ int main()
         std::cout << "Titulo: " << pelicula.titulo << std::endl;
         std::cout << "Tags: " << pelicula.tags << std::endl;
     }
-
-    busqueda_resultados = admin->Busqueda_titulos("A Single Man");
+    try
+    {
+        busqueda_resultados = admin->Busqueda_titulos(" ");
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+    }
     clocker.finalizar();
 
-    std::cout << "Tiempo de busqueda de la pelicula 'A Single Man': " << clocker.observar_tiempo() << " ms" << std::endl;
+    std::cout << "Tiempo de busqueda de la pelicula ' ': " << clocker.observar_tiempo() << " ms" << std::endl;
 
     for (const Pelicula &pelicula : busqueda_resultados)
     {
