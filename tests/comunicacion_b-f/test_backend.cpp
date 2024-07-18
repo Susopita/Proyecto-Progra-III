@@ -51,6 +51,7 @@ int main()
         }
         else
         {
+            std::cout << input.texto() << std::endl;
             vector<Pelicula> busqueda_resultados = ADMIN->Busqueda_titulos(input.texto());
 
             for (const Pelicula &pelicula : busqueda_resultados)

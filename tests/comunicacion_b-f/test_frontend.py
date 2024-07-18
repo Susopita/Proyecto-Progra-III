@@ -58,12 +58,11 @@ def main(page: ft.Page):
         print("Esperando resultados")
         result = client_socket.recibir_resultados_busqueda()
         print("resultados obtenidos:")
-        print(result)
         for i in result:
-            print(f"Pelicula: {i.titulo}\n\ttags: {i.tag}")
+            print(f"Pelicula: {i['titulo']}\n\ttags: {i['tag']}")
         dialog_content.value = ""
         for i in result:
-            dialog_content.value += f"Pelicula: {i.titulo}\n\ttags: {i.tag}" # type: ignore
+            dialog_content.value += f"Pelicula: {i['titulo']}\ntags: {i['tag']}" # type: ignore
         page.update()
 
     # Configuracion de App

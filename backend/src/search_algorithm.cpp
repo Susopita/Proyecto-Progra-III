@@ -344,7 +344,6 @@ vector<Pelicula> Admin::Busqueda_titulos(const string &frase)
     string palabra;
     while (getline(ss, palabra, ' '))
     {
-        cout << palabra << endl;
         unordered_set<Pelicula *> Pelis_temp = RetornarPeliculas(palabra);
         if (!Pelis_temp.empty())
         {
@@ -446,49 +445,5 @@ private:
 vector<pair<Pelicula *, int>> buscarConDecorador(Admin *admin)
 {
     return admin->Busqueda_titulos();
-}
-*/
-
-/*
-int main()
-{
-    ifstream archivo("C:/Users/diego/OneDrive/Escritorio/Git Proyects/Proyecto-Progra-III/backend/resources/data/base_de_datos.csv", std::ios::in);
-    Admin *ADMIN = Admin::getInstance();
-    chrono::time_point<chrono::system_clock> t_init, t_fin;
-    t_init = chrono::high_resolution_clock ::now();
-
-    thread t1(ProcesarDatos_Aux, ref(archivo), ADMIN);
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-
-    ADMIN->Crear_Estructura();
-    t1.join();
-    SearchLoggerDecorator loggerDecorator(buscarConDecorador);
-    vector<pair<Pelicula *, int>> mejores_peliculas_de_du_mundo = loggerDecorator.buscar(ADMIN);
-
-    if (mejores_peliculas_de_du_mundo.empty())
-    {
-        cout << "No se encontraron peliculas coincidentes :(" << endl;
-    }
-    else
-    {
-        cout << "Primeras peliculas coincidentes: " << endl;
-        for (int i = 0; i < 5; i++)
-        {
-            cout << i + 1 << ") Titulo: " << mejores_peliculas_de_du_mundo[i].first->titulo << endl;
-        }
-    }
-
-    for (pair<Pelicula *, int> par : mejores_peliculas_de_du_mundo)
-    {
-        delete par.first;
-    }
-
-    t_fin = chrono::high_resolution_clock ::now();
-    chrono::duration<double, milli> t = t_fin - t_init;
-    cout << "Tiempo que demora en el main: " << t.count() << " milisegundos." << endl;
-
-    delete ADMIN;
-    archivo.close();
-    return 0;
 }
 */
