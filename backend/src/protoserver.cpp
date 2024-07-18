@@ -52,14 +52,20 @@ bool ProtoServer::protocolo_comunicacion_recv(std::string &mensaje)
     std::string size_data(sizeof(network_number), 0);
     int bytes_received = 0;
     int total_bytes_received = 0;
-    auto start_time = std::chrono::steady_clock::now();
-    const auto timeout_duration = std::chrono::seconds(30); // Temporizador de 30 segundos
+    std::chrono::steady_clock::time_point start_time;
+    bool first_time = true;
+    const auto timeout_duration = std::chrono::seconds(5); // Temporizador de 30 segundos
 
-    // Recibir los bytes del tamaño del mensaje
+    // Recibir los bytes del tamaño del mensaje si es caso se envie en partes
     while (total_bytes_received < sizeof(network_number))
     {
         std::string temp_data(sizeof(network_number) - total_bytes_received, 0);
         bytes_received = this->client.recv(temp_data, sizeof(network_number) - total_bytes_received);
+        if (first_time)
+        {
+            start_time = std::chrono::steady_clock::now();
+            first_time = false;
+        }
         if (bytes_received < 0)
         {
             std::cerr << "Error al recibir el tamaño del mensaje" << std::endl;
@@ -83,13 +89,18 @@ bool ProtoServer::protocolo_comunicacion_recv(std::string &mensaje)
     // Preparar para recibir el mensaje completo
     mensaje.resize(size_msg);
     total_bytes_received = 0;
-    start_time = std::chrono::steady_clock::now();
+    first_time = true;
 
     // Recibir el mensaje en fragmentos
     while (total_bytes_received < size_msg)
     {
         std::string temp_data(size_msg - total_bytes_received, 0);
         bytes_received = this->client.recv(temp_data, size_msg - total_bytes_received);
+        if (first_time)
+        {
+            start_time = std::chrono::steady_clock::now();
+            first_time = false;
+        }
         if (bytes_received < 0)
         {
             std::cerr << "Error al recibir el mensaje" << std::endl;
@@ -139,8 +150,10 @@ ProtoServer::ProtoServer(int dominio, int tipo, int protocolo, std::string ip, i
 
 ProtoServer::~ProtoServer()
 {
+    std::cout << "Cerrando conexion . . ." << std::endl;
     this->client.close();
     this->server.close();
+    std::cout << "Server liberado" << std::endl;
 }
 
 bool ProtoServer::estado_conexion_fronted()

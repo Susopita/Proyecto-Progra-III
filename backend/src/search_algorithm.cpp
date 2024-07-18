@@ -323,7 +323,7 @@ void Admin::Crear_Estructura()
 
 unordered_set<Pelicula *> Admin::RetornarPeliculas(const string s)
 { // Obtiene las peliculas del nodo final buscado
-    if (mapaSearchTrees.find(s[0]) != mapaSearchTrees.end())
+    if (s.size() != 0 and mapaSearchTrees.find(s[0]) != mapaSearchTrees.end())
     {
         ST *Arbol = mapaSearchTrees[s[0]];
         Nodo *Nodo_final = Arbol->buscarNodo(s);
