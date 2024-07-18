@@ -201,20 +201,13 @@ bool ProtoServer::enviar_busqueda(const mensaje::Resultado_Busqueda &resultado)
     }
 }
 
-bool ProtoServer::solicitud_busqueda(const mensaje::Busqueda &busqueda)
+bool ProtoServer::solicitud_busqueda(mensaje::Busqueda &busqueda)
 {
     std::string mensaje;
+    // Recibe el mensaje del frontend y lo almacena en "mensaje"
     if (this->protocolo_comunicacion_recv(mensaje))
     {
-        if (busqueda.SerializeToString(&mensaje))
-        {
-            return this->protocolo_comunicacion_send(mensaje);
-        }
-        else
-        {
-            std::cerr << "Error al serializar el mensaje de busqueda" << std::endl;
-            return false;
-        }
+        return busqueda.ParseFromString(mensaje);
     }
     else
     {

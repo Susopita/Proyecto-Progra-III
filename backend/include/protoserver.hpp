@@ -47,5 +47,5 @@ public:
     /*
     Recibe un mensaje serializado y lo deserializa
     */
-    bool solicitud_busqueda(const mensaje::Busqueda &busqueda);
+    bool solicitud_busqueda(mensaje::Busqueda &busqueda);
 };
