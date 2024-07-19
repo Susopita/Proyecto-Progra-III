@@ -1,3 +1,4 @@
+from calendar import c
 import subprocess
 import multiprocessing
 import platform
@@ -65,6 +66,7 @@ def ejecutar_comando(comando, nombre_proceso="comando"):
         return False
 
 def main():
+    sistema = platform.system()
     # Dependencias necesarias para la ejecución de los scripts
     # Verificar la versión de Python
     version_minima = "3.8"
@@ -74,23 +76,28 @@ def main():
         print(f"Requisitos de versión: Python >= {version_minima} y Python < {version_maxima}")
         sys.exit(1)
 
+    comandosInstalacion = []
+
+    # Verificar la plataforma
+    if sistema == 'Darwin':
+        # Instalar dependencias con Homebrew
+        comandosInstalacion.append("brew install protobuf")
+
     # Verificar si flet está instalado
     flet_instalado = esta_instalado("flet")
 
     if not flet_instalado:
-        comandoInstalacionFlet = "pip install flet"
-        subprocess.run(comandoInstalacionFlet, shell=True)
+        comandosInstalacion.append("pip install flet")
 
     # Verificar si protobuf está instalado
-    protobuf_instalado = esta_instalado("google.protobuf")
+    protobuf_instalado = esta_instalado("protobuf")
 
     if not protobuf_instalado:
-        comandoInstalacionProtobuf = "pip install protobuf"
-        subprocess.run(comandoInstalacionProtobuf, shell=True)
+        comandosInstalacion.append("pip install protobuf")
 
+    subprocess.run(' && '.join(comandosInstalacion),shell=True, check=True)
 
     ruta_actual = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
-    sistema = platform.system()
     backend_ejecutable = 'backend.exe' if sistema == 'Windows' else 'backend'
     if not os.path.exists(f'{ruta_actual}/tests/comunicacion_b-f/{backend_ejecutable}'):
         

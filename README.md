@@ -5,9 +5,20 @@
 - Leydy Yuliza Rodriguez Poma
 - Humberto Daniel Caballero Sarco
 
-## Subtitulos
+**Vimex** 
+## Dependencias
+Este proyecto requiere ciertas librerias o headers necesarios para su compilacion y compilacion tanto para windows como para macOS:
+- 3.8 <= Python <= 3.11.9 
+- Flet
+- Protobuf
+- Estandar 20 para el compilador de c++
+Como vera no son muchas dependencias y tampoco son complicadas de descargar si esta en macOS, ya que solo requiere unos pequeños comandos con su gestor de paquetes como podria ser homebrew entre otros, pero para simplificar todos los procesos, tenemos un script que automatiza la mayoria de dependencias, solo ejecute:
 
-**netflix peruano** 
+```bash
+python tests/comunicacion_b-f/play.py
+```
+Este scritp instalara las dependencias usando tanto homebrew como pip y como se habra dado cuenta, este servicio es para macOS. Proximamente se instantara darle soporte a Windows pero suele ser mas complicado y aun falta resolver los comandos de compilacion con protobuf en esa plataforma pero le garantizo que si funciona en macOS.
+
 ## Contexto
 ## Plataforma de Streaming
 El objetivo del proyecto final es implementar una plataforma de *streaming*. Un programa que administre la búsqueda y visualización de la sinopsis de películas. Para ello se debe implementar las siguientes operaciones:
