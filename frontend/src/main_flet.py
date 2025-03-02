@@ -7,6 +7,11 @@ PUERTO = 8080
 FAMILIA_SC = AF_INET # Dominio: IPv4 
 TIPO_SC = SOCK_STREAM
 
+"""
+Comando de ejecucion:
+python tests/comunicacion_b-f/test_frontend.py
+"""
+
 # Conexion con backend
 client_socket = ClientSocket(
     IP=IP,
@@ -16,6 +21,10 @@ client_socket = ClientSocket(
 )
 
 def main(page: ft.Page):
+
+    # Busquedas
+    titulos: list = []
+
     # Función para manejar el clic en el botón de búsqueda
     def show_search_field(e):
         search_field.visible = True
@@ -23,10 +32,14 @@ def main(page: ft.Page):
         search_field.focus()
 
     # Función para manejar el envío de información
-    def handle_search(e):
+    def handle_search():
         search_term = search_field.value
-        dialog_content.value = f"Buscando: {search_term}"  # Actualizar el contenido del diálogo
-        page.overlay.append(dialog)
+        dialog_busqueda.value = f"Buscando: {search_term}"
+        dialog_busqueda.update()
+        dialog_content.controls.clear()
+        for i in titulos:
+            dialog_content.controls.append(ft.Text(i))
+        dialog_content.update()
         dialog.open = True
         search_field.visible = False
         search_field.value = ""
@@ -45,12 +58,10 @@ def main(page: ft.Page):
         print("Esperando resultados")
         result = client_socket.recibir_resultados_busqueda()
         print("resultados obtenidos:")
-        print(result)
+        titulos.clear()  # Limpiar los títulos anteriores
         for i in result:
-            print(f"Pelicula: {i.titulo}\n\ttags: {i.tag}")
-        dialog_content.value = ""
-        for i in result:
-            dialog_content.value += f"Pelicula: {i.titulo}\n\ttags: {i.tag}" # type: ignore
+            titulos.append(f"{i['titulo']}")
+        print(f"Títulos actualizados: {titulos}")  # Verificar la actualización de los títulos
         page.update()
 
     # Configuracion de App
@@ -60,21 +71,24 @@ def main(page: ft.Page):
     # Color de fondo de la app
     page.bgcolor = ft.colors.WHITE
 
+    # Crear informacion extra
+    dialog_busqueda = ft.Text(value="")
+
+    # Crear el contenido del diálogo
+    dialog_content = ft.ListView(height=350, auto_scroll=True)
+
     # Crear el campo de texto y ocultarlo inicialmente
     search_field = ft.TextField(
         visible=False, 
         autofocus=True, 
         on_change=lambda e: solicitar_busqueda(e),
-        on_submit=lambda e: handle_search(e), 
+        on_submit=lambda e: handle_search(), 
         text_style=ft.TextStyle(color=ft.colors.BLACK))
-
-    # Crear el contenido del diálogo
-    dialog_content = ft.Text(value="")
 
     # Crear el diálogo
     dialog = ft.AlertDialog(
         title=ft.Text("Resultado de la búsqueda"),
-        content=ft.Column(controls=[dialog_content]),
+        content=ft.Column(controls=[dialog_busqueda, dialog_content]),
         actions=[ft.TextButton("OK", on_click=close_dialog)],
         bgcolor=ft.colors.BLUE
     )
@@ -84,6 +98,9 @@ def main(page: ft.Page):
     
     # Agregar el botón y el campo de texto a la página
     page.add(ft.Row([search_button, search_field]))
+
+    # Añadir el diálogo a la página
+    page.overlay.append(dialog)
 
 with client_socket as cliente:
     if cliente.confirmacion_backend():

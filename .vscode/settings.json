@@ -101,5 +101,6 @@
         "reportMissingImports": "none",
         "reportMissingTypeStubs": "none",
         "reportAttributeAccessIssue": "information"
-    }
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }
